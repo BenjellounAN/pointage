@@ -3,110 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order Page</title>
+<title>System</title>
+
 <style>
-body { font-family: Arial; padding: 20px; }
-button { padding:10px 20px; margin:10px; border:none; color:white; cursor:pointer; font-size:16px; border-radius:5px; }
-#step2, #step3 { margin-top:20px; display:none; }
-input, textarea { width:300px; padding:8px; margin-bottom:15px; display:block; }
+
+body{
+font-family:Arial;
+padding:20px;
+}
+
+button{
+padding:12px 25px;
+margin:10px;
+border:none;
+color:white;
+font-size:16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* اخفاء الخطوات */
+
+#step2{
+display:none;
+}
+
+#step3{
+display:none;
+}
+
+input,textarea{
+width:300px;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+display:block;
+}
+
 </style>
 </head>
+
 <body>
 
-<h2>Step 1: Choose a main person</h2>
+<h2>Choose name</h2>
+
 <div id="step1">
-  <button id="btnAnas" style="background-color:red;">Anas</button>
-  <button id="btnOussama" style="background-color:blue;">Oussama</button>
-  <button id="btnAmine" style="background-color:yellow; color:black;">Amine</button>
+
+<button id="anas" style="background:red;">Anas</button>
+
+<button id="oussama" style="background:blue;">Oussama</button>
+
+<button id="amine" style="background:yellow;color:black;">Amine</button>
+
 </div>
+
 
 <div id="step2">
-  <h2>Step 2: Choose a secondary person</h2>
-  <button id="btnHoussam" style="background-color:brown;">Houssam</button>
-  <button id="btnZaki" style="background-color:green;">Zaki</button>
+
+<h2>Choose second name</h2>
+
+<button id="houssam" style="background:brown;">Houssam</button>
+
+<button id="zaki" style="background:green;">Zaki</button>
+
 </div>
+
 
 <div id="step3">
-  <h2>Step 3: Enter details</h2>
-  <label>Price (MAD)</label>
-  <input type="number" id="price" placeholder="Enter price">
-  <label>Description</label>
-  <textarea id="description" placeholder="Enter description"></textarea>
-  <button id="sendBtn" style="background-color:green;">Send</button>
-  <button id="backBtn" style="background-color:gray;">Back</button>
+
+<h2>Information</h2>
+
+<label>Price MAD</label>
+<input type="number" id="price">
+
+<label>Description</label>
+<textarea id="desc"></textarea>
+
+<button id="send" style="background:green;">Send</button>
+
+<button id="back" style="background:gray;">Back</button>
+
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.6.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.6.2/firebase-firestore-compat.js"></script>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
-  authDomain: "deliverymarrakech.firebaseapp.com",
-  projectId: "deliverymarrakech",
-  storageBucket: "deliverymarrakech.firebasestorage.app",
-  messagingSenderId: "543072772322",
-  appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
-  measurementId: "G-YMXBJFJ9N8"
-};
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+let mainName=""
+let secondName=""
 
-let mainPerson = '';
-let secondaryPerson = '';
+/* step1 */
 
-// Step1 buttons
-document.getElementById("btnAnas").onclick = () => { mainPerson="Anas"; showStep2(); }
-document.getElementById("btnOussama").onclick = () => { mainPerson="Oussama"; showStep2(); }
-document.getElementById("btnAmine").onclick = () => { mainPerson="Amine"; showStep2(); }
-
-// Step2 buttons
-document.getElementById("btnHoussam").onclick = () => { secondaryPerson="Houssam"; showStep3(); }
-document.getElementById("btnZaki").onclick = () => { secondaryPerson="Zaki"; showStep3(); }
-
-// Back button
-document.getElementById("backBtn").onclick = () => {
-  document.getElementById("step3").style.display="none";
-  document.getElementById("step2").style.display="block";
+document.getElementById("anas").onclick=function(){
+mainName="Anas"
+goStep2()
 }
 
-// Send button
-document.getElementById("sendBtn").onclick = () => {
-  const price = document.getElementById("price").value;
-  const description = document.getElementById("description").value;
-
-  if(!price){ alert("Please enter a price!"); return; }
-
-  db.collection("orders").add({
-    mainPerson,
-    secondaryPerson,
-    price: Number(price),
-    description,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(() => {
-    alert("Order sent successfully!");
-    // Reset
-    document.getElementById("price").value="";
-    document.getElementById("description").value="";
-    document.getElementById("step3").style.display="none";
-    document.getElementById("step1").style.display="block";
-  }).catch(err => {
-    console.error(err);
-    alert("Error sending order");
-  });
+document.getElementById("oussama").onclick=function(){
+mainName="Oussama"
+goStep2()
 }
 
-function showStep2(){
-  document.getElementById("step1").style.display="none";
-  document.getElementById("step2").style.display="block";
+document.getElementById("amine").onclick=function(){
+mainName="Amine"
+goStep2()
 }
 
-function showStep3(){
-  document.getElementById("step2").style.display="none";
-  document.getElementById("step3").style.display="block";
+/* step2 */
+
+document.getElementById("houssam").onclick=function(){
+secondName="Houssam"
+goStep3()
 }
+
+document.getElementById("zaki").onclick=function(){
+secondName="Zaki"
+goStep3()
+}
+
+/* back */
+
+document.getElementById("back").onclick=function(){
+
+document.getElementById("step3").style.display="none"
+document.getElementById("step2").style.display="block"
+
+}
+
+/* send */
+
+document.getElementById("send").onclick=function(){
+
+let price=document.getElementById("price").value
+let desc=document.getElementById("desc").value
+
+console.log(mainName,secondName,price,desc)
+
+alert("Data Ready")
+
+}
+
+/* functions */
+
+function goStep2(){
+
+document.getElementById("step1").style.display="none"
+document.getElementById("step2").style.display="block"
+
+}
+
+function goStep3(){
+
+document.getElementById("step2").style.display="none"
+document.getElementById("step3").style.display="block"
+
+}
+
 </script>
 
 </body>
