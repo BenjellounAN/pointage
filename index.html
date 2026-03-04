@@ -123,14 +123,17 @@ let currentUser = "";
 let mainPerson = "";
 let selectedPerson = "";
 
+// دالة تسجيل الدخول المبسطة
 function checkLogin() {
-    const password = document.getElementById("password").value;
-    if(password === "12341234") {
-        currentUser = document.getElementById("username").value || "user";
-        document.getElementById("loginPage").style.display = "none";
-        document.getElementById("mainPage").style.display = "flex";
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+    
+    if (password === "12341234") {
+        currentUser = username || "user";
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('mainPage').style.display = 'flex';
     } else {
-        alert("Wrong password - Use: 12341234");
+        alert("كلمة المرور خاطئة - الرجاء استخدام: 12341234");
     }
 }
 
@@ -157,9 +160,9 @@ function backChoose() {
 }
 
 // إرسال البيانات إلى Firebase
-async function sendData() {
-    const amount = document.getElementById("amount").value;
-    const description = document.getElementById("description").value;
+function sendData() {
+    var amount = document.getElementById("amount").value;
+    var description = document.getElementById("description").value;
     
     if(amount === "" || description === "") {
         alert("Please fill all fields");
@@ -167,7 +170,7 @@ async function sendData() {
     }
     
     // تجهيز البيانات
-    const paymentData = {
+    var paymentData = {
         main: mainPerson,
         partner: selectedPerson,
         amount: amount + " MAD",
@@ -177,20 +180,24 @@ async function sendData() {
         timestamp: new Date().toISOString()
     };
     
-    try {
-        // إرسال إلى Firebase
-        await db.collection("payments").add(paymentData);
-        
+    // إرسال إلى Firebase
+    db.collection("payments").add(paymentData)
+    .then(function(docRef) {
         alert("✅ Saved to database successfully!");
         document.getElementById("amount").value = "";
         document.getElementById("description").value = "";
         backChoose();
-        
-    } catch (error) {
+    })
+    .catch(function(error) {
         console.error("Error:", error);
-        alert("❌ Error saving to database. Check console for details.");
-    }
+        alert("❌ Error saving to database");
+    });
 }
+
+// التأكد من أن الصفحة تظهر بشكل صحيح
+window.onload = function() {
+    console.log("Page loaded");
+};
 </script>
 </body>
 </html>
