@@ -512,6 +512,10 @@ opacity:0.5;
 <div class="success-toast" id="successToast">✅ Operation completed successfully!</div>
 
 <script>
+if(sessionStorage.getItem("adminAccess")!=="true"){
+window.location.href="login.html"
+}
+
 
 let currentDeleteIndex = null;
 let paymentsData = [];
