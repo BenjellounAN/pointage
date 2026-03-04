@@ -2,66 +2,327 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Page</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Admin Login - Payment System</title>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background: #f2f2f2;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-}
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
 
-th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-}
+    .login-container {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        padding: 40px 30px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        animation: slideUp 0.5s ease;
+    }
 
-th {
-    background: black;
-    color: white;
-}
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .login-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.8em;
+    }
+
+    .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 0.95em;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+        font-size: 0.9em;
+    }
+
+    .input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        color: #999;
+        font-size: 1.2em;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 15px 15px 15px 45px;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .input-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .input-group input::placeholder {
+        color: #aaa;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .login-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 5px 10px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn:disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 0.9em;
+        margin-top: 15px;
+        display: none;
+        padding: 12px;
+        background: #f8d7da;
+        border-radius: 10px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .error-message.show {
+        display: block;
+        animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .info-text {
+        margin-top: 25px;
+        color: #888;
+        font-size: 0.85em;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px dashed #ddd;
+    }
+
+    .info-text strong {
+        color: #667eea;
+    }
+
+    .credentials-hint {
+        background: #e3f2fd;
+        padding: 12px;
+        border-radius: 10px;
+        margin: 20px 0 10px;
+        font-size: 0.9em;
+        color: #1976d2;
+        border: 1px solid #bbdefb;
+    }
+
+    /* Loading spinner */
+    .spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+        .login-container {
+            padding: 30px 20px;
+        }
+        
+        h1 {
+            font-size: 1.5em;
+        }
+        
+        .login-btn {
+            padding: 14px;
+        }
+    }
 </style>
 </head>
-
 <body>
 
-<h2>Admin - Payments</h2>
-
-<table>
-<thead>
-<tr>
-<th>User</th>
-<th>Amount</th>
-<th>Description</th>
-<th>Date</th>
-</tr>
-</thead>
-<tbody id="dataTable"></tbody>
-</table>
+<div class="login-container">
+    <div class="login-icon">🔐</div>
+    
+    <h1>Admin Panel Login</h1>
+    
+    <div class="subtitle">Enter your credentials to access the payment system</div>
+    
+    <div class="credentials-hint">
+        <strong>Demo Credentials:</strong> Use bnk123 / bnk123
+    </div>
+    
+    <div class="input-group">
+        <label>Username</label>
+        <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="username" placeholder="Enter your username" value="bnk123" autocomplete="off">
+        </div>
+    </div>
+    
+    <div class="input-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+            <span class="input-icon">🔑</span>
+            <input type="password" id="password" placeholder="Enter your password" value="bnk123">
+        </div>
+    </div>
+    
+    <button class="login-btn" onclick="handleLogin()" id="loginBtn">
+        <span>🔓</span> Login to Admin Panel
+    </button>
+    
+    <div class="error-message" id="errorMessage">
+        ❌ Invalid username or password. Please use bnk123/bnk123
+    </div>
+    
+    <div class="info-text">
+        <strong>⚠️ Note:</strong> Only authorized administrators can access this panel.
+    </div>
+</div>
 
 <script>
-const payments = JSON.parse(localStorage.getItem("payments")) || [];
-const table = document.getElementById("dataTable");
+function handleLogin() {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMessage');
+    
+    // Hide any previous error
+    errorMsg.classList.remove('show');
+    
+    // Validate inputs
+    if (!username || !password) {
+        errorMsg.textContent = '❌ Please enter both username and password';
+        errorMsg.classList.add('show');
+        return;
+    }
+    
+    // Check credentials (case-sensitive)
+    if (username === 'bnk123' && password === 'bnk123') {
+        
+        // Show loading state
+        loginBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+        loginBtn.disabled = true;
+        
+        // Simulate slight delay for better UX
+        setTimeout(() => {
+            // Store login session (optional)
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            sessionStorage.setItem('adminUser', username);
+            
+            // Redirect to admin.html
+            window.location.href = 'admin.html';
+        }, 800);
+        
+    } else {
+        // Show error message
+        errorMsg.classList.add('show');
+        
+        // Shake the container
+        document.querySelector('.login-container').style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+            document.querySelector('.login-container').style.animation = '';
+        }, 500);
+    }
+}
 
-payments.forEach(item => {
-    let row = `
-        <tr>
-            <td>${item.user}</td>
-            <td>${item.amount}</td>
-            <td>${item.description}</td>
-            <td>${item.date}</td>
-        </tr>
-    `;
-    table.innerHTML += row;
+// Allow Enter key to submit
+document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        handleLogin();
+    }
 });
+
+// Auto-focus username field
+window.onload = function() {
+    document.getElementById('username').focus();
+};
+
+// Optional: Clear error when user starts typing
+document.getElementById('username').addEventListener('input', function() {
+    document.getElementById('errorMessage').classList.remove('show');
+});
+
+document.getElementById('password').addEventListener('input', function() {
+    document.getElementById('errorMessage').classList.remove('show');
+});
+
 </script>
 
 </body>
