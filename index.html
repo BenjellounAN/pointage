@@ -81,23 +81,23 @@ h2 {
 </head>
 <body>
 
-<button class="fixed-admin-btn" onclick="window.location.href='login.html'">ADMIN</button>
+<button class="fixed-admin-btn" onclick="goToAdmin()">ADMIN</button>
 
 <!-- MAIN PAGE -->
 <div id="mainPage">
 <h2>👤 Select Your Name</h2>
-<button class="main-btn red" onclick="openPerson('Anas')">Anas</button>
-<button class="main-btn blue" onclick="openPerson('Oussama')">Oussama</button>
-<button class="main-btn yellow" onclick="openPerson('Amine')">Amine</button>
+<button class="main-btn red" onclick="selectMain('Anas')">Anas</button>
+<button class="main-btn blue" onclick="selectMain('Oussama')">Oussama</button>
+<button class="main-btn yellow" onclick="selectMain('Amine')">Amine</button>
 </div>
 
 <!-- CHOOSE PAGE -->
 <div id="choosePage">
 <h2>🤝 Select Partner</h2>
-<button class="main-btn orange" onclick="selectPerson('Houssam')">Houssam</button>
-<button class="main-btn green" onclick="selectPerson('Zaki')">Zaki</button>
+<button class="main-btn orange" onclick="selectPartner('Houssam')">Houssam</button>
+<button class="main-btn green" onclick="selectPartner('Zaki')">Zaki</button>
 <br><br>
-<button class="back-btn" onclick="backMain()">← Back</button>
+<button class="back-btn" onclick="goBackToMain()">← Back</button>
 </div>
 
 <!-- PAYMENT PAGE -->
@@ -108,9 +108,9 @@ h2 {
 </div>
 <input id="description" maxlength="60" placeholder="Description" style="padding:10px; width:200px; margin:10px;">
 <br><br>
-<button onclick="sendData()" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">✅ Send</button>
+<button onclick="savePayment()" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">✅ Send</button>
 <br><br>
-<button class="back-btn" onclick="backChoose()">← Back</button>
+<button class="back-btn" onclick="goBackToChoose()">← Back</button>
 </div>
 
 <!-- Firebase -->
@@ -132,61 +132,70 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// متغيرات عامة
 let currentUser = "";
-let mainPerson = "";
-let selectedPerson = "";
+let selectedMain = "";
+let selectedPartner = "";
 
-// التحقق من تسجيل الدخول عند تحميل الصفحة
+// التحقق من تسجيل الدخول
 window.onload = function() {
-    console.log("Page loaded");
-    // التحقق من وجود user في sessionStorage
     const loggedInUser = sessionStorage.getItem("currentUser");
-    console.log("Logged in user:", loggedInUser);
     
     if (!loggedInUser) {
-        // إذا لم يكن مسجل دخول، اذهب إلى login.html
-        console.log("No user found, redirecting to login");
         window.location.href = "login.html";
     } else {
         currentUser = loggedInUser;
-        // تأكد أن mainPage تظهر
-        document.getElementById("mainPage").style.display = "flex";
-        document.getElementById("choosePage").style.display = "none";
-        document.getElementById("paymentPage").style.display = "none";
-        console.log("User logged in, showing main page");
+        showMainPage();
     }
 };
 
-function openPerson(name) {
-    mainPerson = name;
-    document.getElementById("mainPage").style.display = "none";
-    document.getElementById("choosePage").style.display = "flex";
-    document.getElementById("paymentPage").style.display = "none";
-}
-
-function backMain() {
+// دوال التنقل بين الصفحات
+function showMainPage() {
     document.getElementById("mainPage").style.display = "flex";
     document.getElementById("choosePage").style.display = "none";
     document.getElementById("paymentPage").style.display = "none";
 }
 
-function selectPerson(name) {
-    selectedPerson = name;
+function showChoosePage() {
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("choosePage").style.display = "flex";
+    document.getElementById("paymentPage").style.display = "none";
+}
+
+function showPaymentPage() {
     document.getElementById("mainPage").style.display = "none";
     document.getElementById("choosePage").style.display = "none";
     document.getElementById("paymentPage").style.display = "flex";
 }
 
-function backChoose() {
-    document.getElementById("mainPage").style.display = "none";
-    document.getElementById("choosePage").style.display = "flex";
-    document.getElementById("paymentPage").style.display = "none";
+// دوال اختيار الأشخاص
+function selectMain(name) {
+    selectedMain = name;
+    showChoosePage();
+}
+
+function selectPartner(name) {
+    selectedPartner = name;
+    showPaymentPage();
+}
+
+function goBackToMain() {
+    showMainPage();
+}
+
+function goBackToChoose() {
+    showChoosePage();
     document.getElementById("amount").value = "";
     document.getElementById("description").value = "";
 }
 
-// إرسال البيانات إلى Firebase
-function sendData() {
+// دالة الذهاب إلى صفحة الإدارة
+function goToAdmin() {
+    window.location.href = "login.html";
+}
+
+// حفظ البيانات
+function savePayment() {
     const amount = document.getElementById("amount").value;
     const description = document.getElementById("description").value;
     
@@ -195,9 +204,14 @@ function sendData() {
         return;
     }
     
+    if(amount <= 0) {
+        alert("⚠️ Please enter a valid amount");
+        return;
+    }
+    
     const paymentData = {
-        main: mainPerson,
-        partner: selectedPerson,
+        main: selectedMain,
+        partner: selectedPartner,
         amount: amount + " MAD",
         description: description,
         date: new Date().toLocaleString(),
@@ -205,15 +219,13 @@ function sendData() {
         timestamp: new Date().toISOString()
     };
     
-    console.log("Sending data:", paymentData);
-    
     // إرسال إلى Firebase
     db.collection("payments").add(paymentData)
     .then(function() {
         alert("✅ Saved successfully!");
         document.getElementById("amount").value = "";
         document.getElementById("description").value = "";
-        backChoose();
+        showChoosePage();
     })
     .catch(function(error) {
         console.error("Error:", error);
