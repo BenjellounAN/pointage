@@ -4,63 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel</title>
+
 <style>
-body { font-family: Arial; padding: 20px; }
-table { width:100%; border-collapse: collapse; margin-top:20px; }
-th, td { border:1px solid #ccc; padding:8px; text-align:left; }
-th { background-color:#f2f2f2; }
+
+body{
+font-family:Arial;
+padding:20px;
+background:#f5f5f5;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+}
+
+th,td{
+padding:12px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+th{
+background:#222;
+color:white;
+}
+
+.deleteBtn{
+background:red;
+color:white;
+border:none;
+padding:6px 12px;
+cursor:pointer;
+border-radius:4px;
+}
+
 </style>
+
 </head>
+
 <body>
-<h2>Admin Panel - Orders</h2>
-<table id="ordersTable">
-  <thead>
-    <tr>
-      <th>Main Person</th>
-      <th>Secondary Person</th>
-      <th>Price (MAD)</th>
-      <th>Description</th>
-      <th>Time</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+
+<h1>Admin Panel</h1>
+
+<table>
+
+<thead>
+
+<tr>
+<th>Main</th>
+<th>Second</th>
+<th>Price MAD</th>
+<th>Description</th>
+<th>Time</th>
+<th>Delete</th>
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+</tbody>
+
 </table>
 
-<script src="https://www.gstatic.com/firebasejs/10.6.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.6.2/firebase-firestore-compat.js"></script>
+
+
+<!-- Firebase -->
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
-  authDomain: "deliverymarrakech.firebaseapp.com",
-  projectId: "deliverymarrakech",
-  storageBucket: "deliverymarrakech.firebasestorage.app",
-  messagingSenderId: "543072772322",
-  appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
-  measurementId: "G-YMXBJFJ9N8"
+apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
+authDomain: "deliverymarrakech.firebaseapp.com",
+projectId: "deliverymarrakech",
+storageBucket: "deliverymarrakech.firebasestorage.app",
+messagingSenderId: "543072772322",
+appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
+measurementId: "G-YMXBJFJ9N8"
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.firestore();
 
-const tbody = document.querySelector("#ordersTable tbody");
+const tableBody = document.getElementById("tableBody");
 
-// Listen to Firestore
-db.collection("orders").orderBy("timestamp","desc").onSnapshot(snapshot => {
-  tbody.innerHTML = "";
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${data.mainPerson}</td>
-      <td>${data.secondaryPerson}</td>
-      <td>${data.price}</td>
-      <td>${data.description}</td>
-      <td>${data.timestamp ? data.timestamp.toDate().toLocaleString() : ''}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-});
+
+db.collection("payments")
+.orderBy("time","desc")
+.onSnapshot(function(snapshot){
+
+tableBody.innerHTML=""
+
+snapshot.forEach(function(doc){
+
+let data = doc.data()
+
+let row = document.createElement("tr")
+
+row.innerHTML = `
+<td>${data.name1}</td>
+<td>${data.name2}</td>
+<td>${data.price}</td>
+<td>${data.description}</td>
+<td>${new Date(data.time.seconds*1000).toLocaleString()}</td>
+<td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')">Delete</button></td>
+`
+
+tableBody.appendChild(row)
+
+})
+
+})
+
+
+function deleteDoc(id){
+
+db.collection("payments").doc(id).delete()
+
+}
+
 </script>
+
 </body>
 </html>
