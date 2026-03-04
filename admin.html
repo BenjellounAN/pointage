@@ -6,7 +6,7 @@
 <title>Admin Panel - Payment Records</title>
 
 <style>
-/* نفس التنسيقات الموجودة */
+/* نفس التنسيقات الموجودة - احتفظ بها كما هي */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -231,12 +231,6 @@ color:#666;
 font-size:1.1em;
 }
 
-.no-data-icon{
-font-size:3.5em;
-margin-bottom:15px;
-opacity:0.5;
-}
-
 /* Loading Spinner */
 .loading-spinner {
     display: inline-block;
@@ -372,19 +366,9 @@ opacity:0.5;
     color: white;
 }
 
-.dialog-btn.confirm:active {
-    background: #c82333;
-    transform: scale(0.95);
-}
-
 .dialog-btn.cancel {
     background: #e9ecef;
     color: #333;
-}
-
-.dialog-btn.cancel:active {
-    background: #dee2e6;
-    transform: scale(0.95);
 }
 
 /* Success Toast */
@@ -431,17 +415,6 @@ opacity:0.5;
     }
 }
 
-/* Stats counter */
-.stats-badge {
-    background: #e9ecef;
-    color: #495057;
-    padding: 4px 10px;
-    border-radius: 30px;
-    font-size: 0.85em;
-    font-weight: 600;
-    margin-left: 8px;
-}
-
 /* Responsive */
 @media (min-width: 768px) {
     body {
@@ -464,11 +437,6 @@ opacity:0.5;
     
     .box span {
         font-size: 1.5em;
-    }
-    
-    table {
-        font-size: 15px;
-        min-width: auto;
     }
 }
 
@@ -498,6 +466,25 @@ opacity:0.5;
     margin-bottom: 25px;
 }
 
+/* Logout button */
+.logout-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+}
+
+.logout-btn:hover {
+    background: #5a6268;
+}
+
 </style>
 </head>
 
@@ -507,12 +494,16 @@ opacity:0.5;
 
 <!-- Header Actions -->
 <div class="header-actions">
-    <button class="refresh-btn" onclick="loadData()" id="refreshBtn">
-        <span>🔄</span> Refresh Data
-    </button>
-    
-    <button class="clear-all-btn" id="clearAllBtn" onclick="showClearAllDialog()">
-        <span>🗑️</span> Clear All Records
+    <div>
+        <button class="refresh-btn" onclick="loadData()" id="refreshBtn">
+            <span>🔄</span> Refresh Data
+        </button>
+        <button class="clear-all-btn" id="clearAllBtn" onclick="showClearAllDialog()">
+            <span>🗑️</span> Clear All Records
+        </button>
+    </div>
+    <button class="logout-btn" onclick="logout()">
+        <span>🚪</span> Logout
     </button>
 </div>
 
@@ -528,6 +519,7 @@ opacity:0.5;
                 <th>Each Share</th>
                 <th>Description</th>
                 <th>Date</th>
+                <th>User</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -594,13 +586,35 @@ opacity:0.5;
 <!-- Error Toast -->
 <div class="error-toast" id="errorToast">❌ An error occurred!</div>
 
-<!-- Import Firebase and Script -->
-<script type="module">
-import { db, paymentsCollection, getDocs, deleteDoc, doc, query, orderBy, writeBatch } from './firebase-config.js';
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
 
-// Check admin access
-if(sessionStorage.getItem("adminAccess") !== "true"){
-    window.location.href = "login.html"
+<script>
+// تكوين Firebase مباشرة في الملف
+const firebaseConfig = {
+    apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
+    authDomain: "deliverymarrakech.firebaseapp.com",
+    projectId: "deliverymarrakech",
+    storageBucket: "deliverymarrakech.firebasestorage.app",
+    messagingSenderId: "543072772322",
+    appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
+    measurementId: "G-YMXBJFJ9N8"
+};
+
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// التحقق من تسجيل الدخول
+if(sessionStorage.getItem("adminAccess") !== "true") {
+    window.location.href = "login.html";
+}
+
+// دالة تسجيل الخروج
+function logout() {
+    sessionStorage.removeItem("adminAccess");
+    window.location.href = "login.html";
 }
 
 let currentDeleteId = null;
@@ -617,7 +631,6 @@ function showLoading() {
 function hideLoading() {
     document.getElementById('loadingOverlay').classList.remove('active');
     document.getElementById('refreshBtn').disabled = false;
-    // Enable/disable clear all button based on data
     const clearAllBtn = document.getElementById('clearAllBtn');
     if (paymentsData.length === 0) {
         clearAllBtn.disabled = true;
@@ -631,7 +644,6 @@ function showSuccess(message) {
     const toast = document.getElementById('successToast');
     toast.textContent = '✅ ' + message;
     toast.style.display = 'block';
-    
     setTimeout(() => {
         toast.style.display = 'none';
     }, 2000);
@@ -642,7 +654,6 @@ function showError(message) {
     const toast = document.getElementById('errorToast');
     toast.textContent = '❌ ' + message;
     toast.style.display = 'block';
-    
     setTimeout(() => {
         toast.style.display = 'none';
     }, 3000);
@@ -654,8 +665,7 @@ async function loadData() {
     
     try {
         // Get data from Firestore, ordered by date descending
-        const q = query(paymentsCollection, orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await db.collection("payments").orderBy("date", "desc").get();
         
         paymentsData = [];
         querySnapshot.forEach((doc) => {
@@ -678,10 +688,9 @@ async function loadData() {
         };
         
         if(paymentsData.length === 0) {
-            // Show empty state
             table.innerHTML = `
                 <tr>
-                    <td colspan="8" style="padding: 0;">
+                    <td colspan="9" style="padding: 0;">
                         <div class="empty-state">
                             <div class="icon">📭</div>
                             <h3>No Payment Records</h3>
@@ -691,9 +700,7 @@ async function loadData() {
                 </tr>
             `;
         } else {
-            // Display data in table
             paymentsData.forEach((item, index) => {
-                
                 // Extract amount
                 let amountStr = item.amount.replace(" MAD", "");
                 let amount = parseFloat(amountStr);
@@ -713,6 +720,7 @@ async function loadData() {
                     <td>${half.toFixed(2)} MAD</td>
                     <td>${item.description || '-'}</td>
                     <td>${item.date || 'N/A'}</td>
+                    <td>${item.user || item.loggedInUser || 'N/A'}</td>
                     <td>
                         <button class="delete-row-btn" onclick="showDeleteSingleDialog('${item.id}')" title="Delete this record">
                             🗑️
@@ -764,7 +772,6 @@ function showDeleteSingleDialog(id) {
     document.getElementById('dialogOverlay').classList.add('active');
     document.getElementById('deleteSingleDialog').classList.add('active');
     
-    // Set up confirm button
     document.getElementById('confirmDeleteBtn').onclick = function() {
         deleteSingleRecord(currentDeleteId);
     };
@@ -785,12 +792,9 @@ async function deleteSingleRecord(id) {
     hideDeleteSingleDialog();
     
     try {
-        // Delete document from Firestore
-        await deleteDoc(doc(db, "payments", id));
-        
+        await db.collection("payments").doc(id).delete();
         showSuccess('Record deleted successfully!');
-        await loadData(); // Reload data
-        
+        await loadData();
     } catch (error) {
         console.error("Error deleting record:", error);
         showError("Failed to delete record");
@@ -821,19 +825,17 @@ async function clearAllRecords() {
     hideClearAllDialog();
     
     try {
-        // Use batch write to delete all documents
-        const batch = writeBatch(db);
+        const batch = db.batch();
         
         paymentsData.forEach((item) => {
-            const docRef = doc(db, "payments", item.id);
+            const docRef = db.collection("payments").doc(item.id);
             batch.delete(docRef);
         });
         
         await batch.commit();
         
         showSuccess('All records cleared successfully!');
-        await loadData(); // Reload data
-        
+        await loadData();
     } catch (error) {
         console.error("Error clearing records:", error);
         showError("Failed to clear records");
@@ -862,7 +864,7 @@ window.showClearAllDialog = showClearAllDialog;
 window.hideClearAllDialog = hideClearAllDialog;
 window.clearAllRecords = clearAllRecords;
 window.hideAllDialogs = hideAllDialogs;
-
+window.logout = logout;
 </script>
 
 </body>
