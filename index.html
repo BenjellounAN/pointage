@@ -6,7 +6,6 @@
 <title>Private System</title>
 
 <style>
-
 body{
 margin:0;
 font-family:Arial;
@@ -140,192 +139,146 @@ font-weight:bold;
 </button>
 
 <!-- LOGIN -->
-
 <div id="loginPage">
-
 <h2>User Login</h2>
-
 <input id="username" placeholder="User name">
-
 <input type="password" id="password" placeholder="Password">
-
 <button onclick="checkLogin()">Login</button>
-
 </div>
 
 <!-- MAIN PAGE -->
-
 <div id="mainPage">
-
 <button class="main-btn red" onclick="openPerson('Anas')">Anas</button>
-
 <button class="main-btn blue" onclick="openPerson('Oussama')">Oussama</button>
-
 <button class="main-btn yellow" onclick="openPerson('Amine')">Amine</button>
-
 </div>
 
-<!-- CHOOSE PAGE - فقط Houssam و Zaki -->
-
+<!-- CHOOSE PAGE -->
 <div id="choosePage">
-
 <h2>Select Partner</h2>
-
 <button class="main-btn orange" onclick="selectPerson('Houssam')">Houssam</button>
-
 <button class="main-btn green" onclick="selectPerson('Zaki')">Zaki</button>
-
 <br><br>
-
 <button onclick="backMain()">Back</button>
-
 </div>
 
 <!-- PAYMENT PAGE -->
-
 <div id="paymentPage">
-
 <h2>Enter Payment</h2>
-
 <div class="money-container">
-
 <input type="number" id="amount" placeholder="Amount">
-
 <span class="mad-label">MAD</span>
-
 </div>
-
 <input id="description" maxlength="60" placeholder="Description">
-
 <br><br>
-
 <button onclick="sendData()">Send</button>
-
 <br><br>
-
 <button onclick="backChoose()">Back</button>
-
 </div>
 
-<script>
+<!-- Firebase SDK -->
+<script type="module">
 
+// Firebase App
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
+  authDomain: "deliverymarrakech.firebaseapp.com",
+  projectId: "deliverymarrakech",
+  storageBucket: "deliverymarrakech.firebasestorage.app",
+  messagingSenderId: "543072772322",
+  appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
+  measurementId: "G-YMXBJFJ9N8"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Login & Page Logic
 let currentUser = ""
 let mainPerson = ""
 let selectedPerson = ""
+const allowedUsers = ["user1","user2","user3","user4","user5","user6","user7","user8","user9","user10"]
 
-// قائمة المستخدمين المسموح لهم
-const allowedUsers = [
-"user1","user2","user3","user4","user5",
-"user6","user7","user8","user9","user10"
-]
-
-// Function to open admin panel
 function openAdminPanel() {
-    // You can add authentication check here if needed
     window.location.href = 'admin.html';
 }
 
 function checkLogin(){
-
-const username = document.getElementById("username").value.trim()
-const password = document.getElementById("password").value
-
-if(allowedUsers.includes(username) && password === "12341234"){
-
-currentUser = username
-
-document.getElementById("loginPage").style.display = "none"
-document.getElementById("mainPage").style.display = "flex"
-
-}else{
-
-alert("Invalid username or password")
-
-}
-
+    const username = document.getElementById("username").value.trim()
+    const password = document.getElementById("password").value
+    if(allowedUsers.includes(username) && password === "12341234"){
+        currentUser = username
+        document.getElementById("loginPage").style.display = "none"
+        document.getElementById("mainPage").style.display = "flex"
+    }else{
+        alert("Invalid username or password")
+    }
 }
 
 function openPerson(name){
-
-mainPerson = name
-
-document.getElementById("mainPage").style.display = "none"
-document.getElementById("choosePage").style.display = "flex"
-
+    mainPerson = name
+    document.getElementById("mainPage").style.display = "none"
+    document.getElementById("choosePage").style.display = "flex"
 }
 
 function backMain(){
-
-document.getElementById("choosePage").style.display = "none"
-document.getElementById("mainPage").style.display = "flex"
-
+    document.getElementById("choosePage").style.display = "none"
+    document.getElementById("mainPage").style.display = "flex"
 }
 
 function selectPerson(name){
-
-selectedPerson = name
-
-document.getElementById("choosePage").style.display = "none"
-document.getElementById("paymentPage").style.display = "flex"
-
+    selectedPerson = name
+    document.getElementById("choosePage").style.display = "none"
+    document.getElementById("paymentPage").style.display = "flex"
 }
 
 function backChoose(){
-
-document.getElementById("paymentPage").style.display = "none"
-document.getElementById("choosePage").style.display = "flex"
-
+    document.getElementById("paymentPage").style.display = "none"
+    document.getElementById("choosePage").style.display = "flex"
 }
 
-function sendData(){
+// Send data to Firestore
+async function sendData(){
+    const amount = document.getElementById("amount").value
+    const description = document.getElementById("description").value
 
-const amount = document.getElementById("amount").value
-const description = document.getElementById("description").value
+    if(amount === "" || description === ""){
+        alert("Please fill all fields")
+        return
+    }
 
-if(amount === "" || description === ""){
+    const half = amount / 2
+    const data = {
+        main: mainPerson,
+        partner: selectedPerson,
+        amount: amount + " MAD",
+        main_share: half + " MAD",
+        partner_share: half + " MAD",
+        description: description,
+        date: new Date().toLocaleString(),
+        loggedInUser: currentUser
+    }
 
-alert("Please fill all fields")
-return
-
-}
-
-// حساب النصف
-const half = amount / 2
-
-// إنشاء كائن البيانات بالمفاتيح المطلوبة
-const data = {
-
-main: mainPerson,           // الشخص الرئيسي (Anas, Oussama, Amine)
-partner: selectedPerson,     // الشريك (Houssam أو Zaki)
-amount: amount + " MAD",
-main_share: half + " MAD",   // نصيب الرئيسي
-partner_share: half + " MAD", // نصيب الشريك
-description: description,
-date: new Date().toLocaleString(),
-loggedInUser: currentUser
-
-}
-
-// حفظ في localStorage
-let allData = JSON.parse(localStorage.getItem("payments")) || []
-allData.push(data)
-localStorage.setItem("payments", JSON.stringify(allData))
-
-alert("✅ Saved Successfully!")
-
-// مسح الحقول
-document.getElementById("amount").value = ""
-document.getElementById("description").value = ""
-
-// العودة لصفحة الاختيار
-backChoose()
-
+    try {
+        await addDoc(collection(db, "payments"), data)
+        alert("✅ Saved Successfully!")
+        document.getElementById("amount").value = ""
+        document.getElementById("description").value = ""
+        backChoose()
+    } catch (error) {
+        console.error("Error adding document: ", error)
+        alert("Error saving data")
+    }
 }
 
 // Keyboard support for Enter key
 document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
-        // If on login page, trigger login
         if (document.getElementById("loginPage").style.display !== "none") {
             checkLogin();
         }
@@ -333,6 +286,5 @@ document.addEventListener('keypress', function(e) {
 });
 
 </script>
-
 </body>
 </html>
