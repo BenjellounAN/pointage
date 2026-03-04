@@ -10,7 +10,15 @@ body {
     font-family:Arial; 
     background: white;
 }
-#mainPage, #choosePage, #paymentPage {
+#mainPage {
+    height:100vh;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+#choosePage, #paymentPage {
     display:none;
     height:100vh;
     background:white;
@@ -60,6 +68,10 @@ body {
     background: #95a5a6;
     color: white;
     margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 h2 {
     color: #333;
@@ -94,9 +106,9 @@ h2 {
 <div class="money-container">
 <input type="number" id="amount" placeholder="Amount MAD">
 </div>
-<input id="description" maxlength="60" placeholder="Description" style="padding:10px; width:200px;">
+<input id="description" maxlength="60" placeholder="Description" style="padding:10px; width:200px; margin:10px;">
 <br><br>
-<button onclick="sendData()" style="background:#4CAF50; color:white;">✅ Send</button>
+<button onclick="sendData()" style="background:#4CAF50; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">✅ Send</button>
 <br><br>
 <button class="back-btn" onclick="backChoose()">← Back</button>
 </div>
@@ -126,14 +138,22 @@ let selectedPerson = "";
 
 // التحقق من تسجيل الدخول عند تحميل الصفحة
 window.onload = function() {
+    console.log("Page loaded");
     // التحقق من وجود user في sessionStorage
     const loggedInUser = sessionStorage.getItem("currentUser");
+    console.log("Logged in user:", loggedInUser);
+    
     if (!loggedInUser) {
         // إذا لم يكن مسجل دخول، اذهب إلى login.html
+        console.log("No user found, redirecting to login");
         window.location.href = "login.html";
     } else {
         currentUser = loggedInUser;
+        // تأكد أن mainPage تظهر
         document.getElementById("mainPage").style.display = "flex";
+        document.getElementById("choosePage").style.display = "none";
+        document.getElementById("paymentPage").style.display = "none";
+        console.log("User logged in, showing main page");
     }
 };
 
@@ -141,22 +161,26 @@ function openPerson(name) {
     mainPerson = name;
     document.getElementById("mainPage").style.display = "none";
     document.getElementById("choosePage").style.display = "flex";
+    document.getElementById("paymentPage").style.display = "none";
 }
 
 function backMain() {
-    document.getElementById("choosePage").style.display = "none";
     document.getElementById("mainPage").style.display = "flex";
+    document.getElementById("choosePage").style.display = "none";
+    document.getElementById("paymentPage").style.display = "none";
 }
 
 function selectPerson(name) {
     selectedPerson = name;
+    document.getElementById("mainPage").style.display = "none";
     document.getElementById("choosePage").style.display = "none";
     document.getElementById("paymentPage").style.display = "flex";
 }
 
 function backChoose() {
-    document.getElementById("paymentPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "none";
     document.getElementById("choosePage").style.display = "flex";
+    document.getElementById("paymentPage").style.display = "none";
     document.getElementById("amount").value = "";
     document.getElementById("description").value = "";
 }
@@ -180,6 +204,8 @@ function sendData() {
         user: currentUser,
         timestamp: new Date().toISOString()
     };
+    
+    console.log("Sending data:", paymentData);
     
     // إرسال إلى Firebase
     db.collection("payments").add(paymentData)
