@@ -38,6 +38,35 @@ font-size: 1.8em;
     gap: 10px;
 }
 
+/* Back Button */
+.back-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(108,117,125,0.3);
+    transition: all 0.2s;
+    font-size: 0.95em;
+    text-decoration: none;
+}
+
+.back-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.back-btn:active {
+    transform: scale(0.95);
+    background: #5a6268;
+}
+
 .refresh-btn{
 padding:12px 25px;
 background:#2196f3;
@@ -280,9 +309,19 @@ opacity:0.5;
 
 <!-- Header Actions -->
 <div class="header-actions">
-    <button class="refresh-btn" onclick="window.location.reload()">
-        <span>🔄</span> Refresh Data
-    </button>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <!-- Back Button with left arrow SVG -->
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            Back
+        </button>
+        
+        <button class="refresh-btn" onclick="window.location.reload()">
+            <span>🔄</span> Refresh Data
+        </button>
+    </div>
     
     <button class="logout-btn" onclick="logout()">
         <span>🚪</span> Logout
