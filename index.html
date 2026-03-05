@@ -78,6 +78,9 @@ display:block;
 
 <button id="zaki" style="background:green;">Zaki</button>
 
+<!-- إضافة زر Mohemd باللون البنفسجي -->
+<button id="mohemd" style="background:purple;">Mohemd</button>
+
 <br>
 
 <button id="backToFirst" style="background:gray;">Back</button>
@@ -161,6 +164,12 @@ goStep3()
 
 document.getElementById("zaki").onclick=function(){
 secondName="Zaki"
+goStep3()
+}
+
+/* إضافة حدث النقر لزر Mohemd */
+document.getElementById("mohemd").onclick=function(){
+secondName="Mohemd"
 goStep3()
 }
 
