@@ -305,6 +305,18 @@ body {
     border: 1px solid #4caf50;
 }
 
+.type-at-work {
+    background: rgba(255, 152, 0, 0.3);
+    color: #ffe0b2;
+    border: 1px solid #ff9800;
+}
+
+.type-paid {
+    background: rgba(76, 175, 80, 0.3);
+    color: #c8e6c9;
+    border: 1px solid #4caf50;
+}
+
 /* Amount */
 .amount-positive {
     color: #a5d6a7;
@@ -581,6 +593,8 @@ body {
             <option value="all">All Operations</option>
             <option value="payment">Payments Only</option>
             <option value="transfer">Transfers Only</option>
+            <option value="atwork">At Work Only</option>
+            <option value="paid">Paid Only</option>
         </select>
         
         <select class="filter-select" id="personFilter">
@@ -737,6 +751,28 @@ function getPersonRoleClass(personName) {
     return 'person-worker';
 }
 
+// Get type badge class based on operation status
+function getTypeBadgeClass(status) {
+    if (status === 'paid') {
+        return 'type-paid';
+    } else if (status === 'atwork') {
+        return 'type-at-work';
+    } else {
+        return 'type-transfer';
+    }
+}
+
+// Get type display text
+function getTypeDisplayText(status) {
+    if (status === 'paid') {
+        return '💰 Paid';
+    } else if (status === 'atwork') {
+        return '⚙️ At Work';
+    } else {
+        return '📦 Transfer';
+    }
+}
+
 // Load all operations
 async function loadAllOperations() {
     try {
@@ -745,7 +781,7 @@ async function loadAllOperations() {
             .orderBy("time", "desc")
             .get();
         
-        // Load transfers
+        // Load transfers (wallet_entries)
         const transfersSnapshot = await db.collection("wallet_entries")
             .orderBy("timestamp", "desc")
             .get();
@@ -767,11 +803,12 @@ async function loadAllOperations() {
                 description: data.description || '-',
                 timestamp: data.time,
                 date: formatDate(data.time),
+                status: 'atwork', // Default status for payments is "At work"
                 rawData: data
             });
         });
         
-        // Process transfers - MODIFIED: Now using name1 as sender and name2 as receiver
+        // Process transfers (wallet_entries)
         transfersSnapshot.forEach(doc => {
             const data = doc.data();
             
@@ -779,12 +816,13 @@ async function loadAllOperations() {
                 id: doc.id,
                 type: 'transfer',
                 collection: 'wallet_entries',
-                sender: data.name1 || 'System', // The person who sent the money (from choose name)
-                receiver: data.name2 || data.member || 'Unknown', // The person who received the money (from choose second name)
+                sender: data.name1 || 'System',
+                receiver: data.name2 || data.member || 'Unknown',
                 amount: data.amount || 0,
-                description: data.description || `Transfer to wallet`, // Description from index.html
+                description: data.description || 'Transfer to wallet',
                 timestamp: data.timestamp,
                 date: formatDate(data.timestamp),
+                status: data.status || 'paid', // If status exists, use it, otherwise default to "paid" for backward compatibility
                 rawData: data
             });
         });
@@ -798,6 +836,9 @@ async function loadAllOperations() {
         
         // Apply filters
         applyFilters();
+        
+        // Listen for real-time updates to wallet_entries (to catch status changes)
+        setupRealtimeListener();
         
     } catch (error) {
         console.error("Error loading operations:", error);
@@ -815,6 +856,34 @@ async function loadAllOperations() {
     }
 }
 
+// Set up real-time listener for wallet_entries to update status when changed in admin
+function setupRealtimeListener() {
+    db.collection("wallet_entries").onSnapshot((snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "modified") {
+                // When a document is modified in admin (status changed from atwork to paid)
+                const updatedData = change.doc.data();
+                
+                // Find and update the operation in allOperations
+                const operationIndex = allOperations.findIndex(op => op.id === change.doc.id && op.collection === 'wallet_entries');
+                if (operationIndex !== -1) {
+                    allOperations[operationIndex].status = updatedData.status || 'paid';
+                    allOperations[operationIndex].amount = updatedData.amount || 0;
+                    allOperations[operationIndex].description = updatedData.description || allOperations[operationIndex].description;
+                    
+                    // Re-apply filters and re-render
+                    applyFilters();
+                }
+            } else if (change.type === "added") {
+                // New transfer added - reload all to be safe
+                loadAllOperations();
+            }
+        });
+    }, (error) => {
+        console.error("Listener error:", error);
+    });
+}
+
 // Apply filters
 function applyFilters() {
     const type = typeFilter.value;
@@ -823,8 +892,13 @@ function applyFilters() {
     const search = searchInput.value.toLowerCase();
     
     filteredOperations = allOperations.filter(op => {
-        // Type filter
-        if (type !== 'all' && op.type !== type) return false;
+        // Type filter - now includes atwork and paid
+        if (type !== 'all') {
+            if (type === 'atwork' && op.status !== 'atwork') return false;
+            if (type === 'paid' && op.status !== 'paid') return false;
+            if (type === 'payment' && op.type !== 'payment') return false;
+            if (type === 'transfer' && op.type !== 'transfer') return false;
+        }
         
         // Person filter
         if (person !== 'all') {
@@ -956,53 +1030,29 @@ function renderTable() {
     let html = '';
     
     pageItems.forEach(op => {
-        if (op.type === 'payment') {
-            // Payment row
-            const senderRole = getPersonRoleClass(op.sender);
-            const receiverRole = getPersonRoleClass(op.receiver);
-            
-            html += `
-                <tr>
-                    <td><span class="type-badge type-payment">💳 Payment</span></td>
-                    <td>
-                        <span class="ops-person-badge ${senderRole}">${op.sender || 'N/A'}</span>
-                    </td>
-                    <td><span class="transfer-arrow">→</span></td>
-                    <td>
-                        <span class="ops-person-badge ${receiverRole}">${op.receiver || 'N/A'}</span>
-                    </td>
-                    <td class="amount-positive">${op.amount.toFixed(2)}</td>
-                    <td class="description-cell" data-full="${op.description}">${op.description}</td>
-                    <td>${op.date}</td>
-                    <td>
-                        <button class="ops-delete-btn" onclick="deleteOperation('${op.id}', '${op.collection}')" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-            `;
-        } else {
-            // Transfer row - MODIFIED: Show sender and receiver correctly
-            const senderRole = getPersonRoleClass(op.sender);
-            const receiverRole = getPersonRoleClass(op.receiver);
-            
-            html += `
-                <tr>
-                    <td><span class="type-badge type-transfer">📦 Transfer</span></td>
-                    <td>
-                        <span class="ops-person-badge ${senderRole}">${op.sender || 'N/A'}</span>
-                    </td>
-                    <td><span class="transfer-arrow">→</span></td>
-                    <td>
-                        <span class="ops-person-badge ${receiverRole}">${op.receiver || 'N/A'}</span>
-                    </td>
-                    <td class="amount-positive">${op.amount.toFixed(2)}</td>
-                    <td class="description-cell" data-full="${op.description}">${op.description}</td>
-                    <td>${op.date}</td>
-                    <td>
-                        <button class="ops-delete-btn" onclick="deleteOperation('${op.id}', '${op.collection}')" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-            `;
-        }
+        const senderRole = getPersonRoleClass(op.sender);
+        const receiverRole = getPersonRoleClass(op.receiver);
+        const typeClass = getTypeBadgeClass(op.status);
+        const typeText = getTypeDisplayText(op.status);
+        
+        html += `
+            <tr>
+                <td><span class="type-badge ${typeClass}">${typeText}</span></td>
+                <td>
+                    <span class="ops-person-badge ${senderRole}">${op.sender || 'N/A'}</span>
+                </td>
+                <td><span class="transfer-arrow">→</span></td>
+                <td>
+                    <span class="ops-person-badge ${receiverRole}">${op.receiver || 'N/A'}</span>
+                </td>
+                <td class="amount-positive">${op.amount.toFixed(2)}</td>
+                <td class="description-cell" data-full="${op.description}">${op.description}</td>
+                <td>${op.date}</td>
+                <td>
+                    <button class="ops-delete-btn" onclick="deleteOperation('${op.id}', '${op.collection}')" title="Delete">🗑️</button>
+                </td>
+            </tr>
+        `;
     });
     
     tableBody.innerHTML = html;
@@ -1077,7 +1127,7 @@ function exportToCSV() {
     }
     
     // Create CSV content
-    let csv = 'Type,Sender,Receiver,Amount,Description,Date\n';
+    let csv = 'Type,Sender,Receiver,Amount,Description,Date,Status\n';
     
     filteredOperations.forEach(op => {
         const type = op.type === 'payment' ? 'Payment' : 'Transfer';
@@ -1086,8 +1136,9 @@ function exportToCSV() {
         const amount = op.amount.toFixed(2);
         const description = op.description.replace(/,/g, ';'); // Replace commas
         const date = op.date;
+        const status = op.status || 'paid';
         
-        csv += `${type},${sender},${receiver},${amount},${description},${date}\n`;
+        csv += `${type},${sender},${receiver},${amount},${description},${date},${status}\n`;
     });
     
     // Download CSV
