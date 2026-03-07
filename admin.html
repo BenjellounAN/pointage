@@ -724,16 +724,63 @@ opacity:0.5;
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// Check authentication
-if (sessionStorage.getItem('isAuthenticated') !== 'true') {
-    window.location.href = 'login.html';
-}
+// ========== الإصلاح: تحسين التحقق من المصادقة ==========
+(function checkAuthentication() {
+    // التحقق من جميع مفاتيح المصادقة الممكنة
+    const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' || 
+                   sessionStorage.getItem('delivery_auth') === 'true' ||
+                   localStorage.getItem('delivery_auth') === 'true';
+    
+    // التحقق من صلاحية الجلسة إذا وجد وقت
+    const authTime = sessionStorage.getItem('delivery_auth_time') || 
+                    localStorage.getItem('delivery_auth_time');
+    
+    if (isAuth) {
+        // إذا كان هناك وقت جلسة، تحقق من صلاحيته (اختياري)
+        if (authTime) {
+            const SESSION_DURATION = 60 * 60 * 1000; // ساعة واحدة
+            const timeElapsed = Date.now() - parseInt(authTime);
+            
+            if (timeElapsed > SESSION_DURATION) {
+                // انتهت صلاحية الجلسة - سجل خروج
+                clearAllAuth();
+                window.location.href = 'index.html';
+                return false;
+            }
+        }
+        
+        // مصادقة صالحة - أكمل
+        console.log('Authentication successful');
+        return true;
+    } else {
+        // غير مصرح به - توجه إلى صفحة تسجيل الدخول
+        console.log('Not authenticated, redirecting to login');
+        
+        // احفظ الصفحة الحالية للتوجيه بعد تسجيل الدخول
+        sessionStorage.setItem('redirect_after_login', window.location.pathname);
+        
+        // تأكد من استخدام اسم الملف الصحيح (index.html أو login.html)
+        window.location.href = 'index.html';
+        return false;
+    }
+})();
 
-function logout() {
+// دالة مسح جميع بيانات المصادقة
+function clearAllAuth() {
     sessionStorage.removeItem('isAuthenticated');
-    window.location.href = 'login.html';
+    sessionStorage.removeItem('delivery_auth');
+    sessionStorage.removeItem('delivery_auth_time');
+    localStorage.removeItem('delivery_auth');
+    localStorage.removeItem('delivery_auth_time');
 }
 
+// دالة تسجيل الخروج المحسنة
+function logout() {
+    clearAllAuth();
+    window.location.href = 'index.html';
+}
+
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
     authDomain: "deliverymarrakech.firebaseapp.com",
@@ -744,6 +791,7 @@ const firebaseConfig = {
     measurementId: "G-YMXBJFJ9N8"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const tableBody = document.getElementById("tableBody");
