@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Admin Panel · Wallet Popup</title>
+<title>Admin Panel · Professional Wallet System</title>
 
 <style>
 * {
@@ -27,7 +27,7 @@ margin: 15px 0 20px;
 font-size: 1.8em;
 }
 
-/* ========== HEADER ACTIONS معاد تصميمها ========== */
+/* ========== HEADER ACTIONS ========== */
 .header-actions {
     display: flex;
     flex-direction: column;
@@ -41,7 +41,6 @@ font-size: 1.8em;
     border: 1px solid #e9ecf0;
 }
 
-/* الصف العلوي - Back و Logout في الوسط */
 .top-row {
     display: flex;
     gap: 20px;
@@ -50,7 +49,6 @@ font-size: 1.8em;
     width: 100%;
 }
 
-/* الصف السفلي - باقي الأزرار أفقية */
 .bottom-row {
     display: flex;
     gap: 15px;
@@ -62,7 +60,6 @@ font-size: 1.8em;
     border-top: 2px dashed #e0e7f0;
 }
 
-/* ========== تصميم موحد لجميع الأزرار ========== */
 .action-btn {
     padding: 12px 24px;
     border: none;
@@ -109,7 +106,6 @@ font-size: 1.8em;
     fill: currentColor;
 }
 
-/* ألوان الأزرار المختلفة */
 .back-btn {
     background: linear-gradient(135deg, #6c757d, #5a6268);
     color: white;
@@ -143,10 +139,137 @@ font-size: 1.8em;
     min-width: 120px;
 }
 
-/* الأزرار الرئيسية أيقونات أكبر */
 .send-wallet-btn svg, .view-wallet-btn svg {
     width: 22px;
     height: 22px;
+}
+
+/* ========== WALLET SNAPSHOT SECTION (Professional Horizontal Display) ========== */
+.wallet-snapshot-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 30px;
+    padding: 30px 25px;
+    margin: 30px 0 25px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    color: white;
+}
+
+.snapshot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.snapshot-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.snapshot-title svg {
+    width: 32px;
+    height: 32px;
+    fill: white;
+}
+
+.snapshot-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-size: 1rem;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Horizontal wallet cards container */
+.wallet-horizontal-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 25px 0 15px;
+}
+
+/* Professional wallet card */
+.pro-wallet-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px 25px;
+    min-width: 160px;
+    flex: 1 1 auto;
+    max-width: 200px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    transform: translateY(0);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.pro-wallet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.25);
+}
+
+.pro-wallet-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ffd700, #ff8c00);
+}
+
+.pro-wallet-card .card-person {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding: 6px 15px;
+    display: inline-block;
+    border-radius: 30px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.pro-wallet-card .card-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 10px 0 5px;
+    color: #2d3748;
+}
+
+.pro-wallet-card .card-currency {
+    font-size: 0.9rem;
+    color: #718096;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Person card backgrounds */
+.card-person.anas-bg { background: linear-gradient(135deg, #c62828, #b71c1c); }
+.card-person.oussama-bg { background: linear-gradient(135deg, #1565c0, #0d47a1); }
+.card-person.amine-bg { background: linear-gradient(135deg, #9e6b0c, #7f5a0a); }
+.card-person.houssam-bg { background: linear-gradient(135deg, #bf5e00, #9e4d00); }
+.card-person.zaki-bg { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+.card-person.mohamed-bg { background: linear-gradient(135deg, #6a1b9a, #4a0072); }
+
+.snapshot-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.2);
+    padding: 12px 25px;
+    border-radius: 50px;
+    backdrop-filter: blur(5px);
 }
 
 /* ========== Table Container ========== */
@@ -190,7 +313,6 @@ tr:hover{
 background:#e3f2fd;
 }
 
-/* Person badges */
 .person-badge {
     display: inline-block;
     padding: 6px 16px;
@@ -208,7 +330,6 @@ background:#e3f2fd;
 .person-zaki { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
 .person-mohamed { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #6a1b9a; }
 
-/* Delete button */
 .deleteBtn {
     background: #ff5252;
     color: white;
@@ -252,7 +373,6 @@ font-size: 0.95em;
 text-align: center;
 border: 1px solid #eef2f6;
 transition: all 0.3s;
-backdrop-filter: blur(5px);
 }
 
 .box:hover {
@@ -268,31 +388,12 @@ margin-top: 8px;
 color: #1e2b3a;
 }
 
-/* Person-specific summary colors */
-.box[data-person="anas"] { 
-    border-bottom: 4px solid #c62828;
-    background: linear-gradient(to bottom, #ffffff, #ffebee);
-}
-.box[data-person="oussama"] { 
-    border-bottom: 4px solid #1565c0;
-    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
-}
-.box[data-person="amine"] { 
-    border-bottom: 4px solid #9e6b0c;
-    background: linear-gradient(to bottom, #ffffff, #fffde7);
-}
-.box[data-person="houssam"] { 
-    border-bottom: 4px solid #bf5e00;
-    background: linear-gradient(to bottom, #ffffff, #fff3e0);
-}
-.box[data-person="zaki"] { 
-    border-bottom: 4px solid #2e7d32;
-    background: linear-gradient(to bottom, #ffffff, #e8f5e9);
-}
-.box[data-person="mohamed"] { 
-    border-bottom: 4px solid #6a1b9a;
-    background: linear-gradient(to bottom, #ffffff, #f3e5f5);
-}
+.box[data-person="anas"] { border-bottom: 4px solid #c62828; background: linear-gradient(to bottom, #ffffff, #ffebee); }
+.box[data-person="oussama"] { border-bottom: 4px solid #1565c0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); }
+.box[data-person="amine"] { border-bottom: 4px solid #9e6b0c; background: linear-gradient(to bottom, #ffffff, #fffde7); }
+.box[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
+.box[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
+.box[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
 
 .box small {
     color: #666;
@@ -301,160 +402,7 @@ color: #1e2b3a;
     margin-top: 5px;
 }
 
-/* ========== POPUP MODAL (Full screen) ========== */
-.wallet-popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255,255,255,0.98);
-    z-index: 9999;
-    overflow-y: auto;
-    padding: 30px 20px;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.popup-content {
-    max-width: 1300px;
-    margin: 0 auto;
-    position: relative;
-    min-height: 100%;
-}
-
-/* Close button X */
-.close-popup-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: linear-gradient(135deg, #f44336, #d32f2f);
-    color: white;
-    border: none;
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    font-size: 32px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 25px rgba(244,67,54,0.4);
-    transition: all 0.3s;
-    z-index: 10000;
-}
-
-.close-popup-btn:hover {
-    transform: rotate(90deg) scale(1.1);
-    background: linear-gradient(135deg, #d32f2f, #b71c1c);
-}
-
-.popup-title {
-    font-size: 2.5rem;
-    color: #1e2b3a;
-    margin: 20px 0 40px;
-    padding-right: 70px;
-    border-bottom: 4px solid #9c27b0;
-    padding-bottom: 15px;
-    display: inline-block;
-    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 800;
-}
-
-.popup-wallet-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin: 40px 0;
-}
-
-.popup-wallet-card {
-    background: white;
-    border-radius: 30px;
-    padding: 35px 25px;
-    text-align: center;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    border: 1px solid #eef2f6;
-    transition: all 0.4s;
-    position: relative;
-    overflow: hidden;
-}
-
-.popup-wallet-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(90deg, #9c27b0, #ff9800);
-}
-
-.popup-wallet-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-}
-
-.popup-wallet-card .card-person {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    padding: 12px 25px;
-    display: inline-block;
-    border-radius: 50px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.popup-wallet-card .card-amount {
-    font-size: 4rem;
-    font-weight: 800;
-    line-height: 1.2;
-    margin: 15px 0 5px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-}
-
-.popup-wallet-card .card-currency {
-    font-size: 1.2rem;
-    color: #666;
-    font-weight: 500;
-}
-
-.popup-timestamp {
-    text-align: center;
-    font-size: 1.3rem;
-    color: #2c3e50;
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    padding: 18px 35px;
-    border-radius: 60px;
-    display: inline-block;
-    margin: 40px 0 20px;
-    font-weight: 600;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.popup-no-data {
-    text-align: center;
-    padding: 100px 20px;
-    font-size: 2rem;
-    color: #999;
-    background: #f8f9fa;
-    border-radius: 50px;
-}
-
-.popup-no-data .icon {
-    font-size: 6rem;
-    margin-bottom: 25px;
-    display: block;
-}
-
-/* No data state for table */
+/* No data state */
 .no-data{
 text-align:center;
 padding:60px 20px;
@@ -491,35 +439,22 @@ opacity:0.5;
         font-size: 1rem;
     }
     
-    .back-btn, .logout-btn {
-        min-width: 100px;
-    }
-    
     .summary {
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
     }
     
-    .box {
-        padding: 10px 5px;
+    .wallet-horizontal-container {
+        gap: 12px;
     }
     
-    .box span {
-        font-size: 1.2em;
+    .pro-wallet-card {
+        min-width: 130px;
+        padding: 15px 15px;
     }
     
-    .popup-wallet-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .popup-title {
-        font-size: 1.8rem;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .popup-wallet-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .pro-wallet-card .card-amount {
+        font-size: 1.6rem;
     }
 }
 
@@ -547,9 +482,8 @@ opacity:0.5;
 </head>
 <body>
 
-<!-- Header Actions معاد تصميمها - Back و Logout في الوسط -->
+<!-- Header Actions -->
 <div class="header-actions">
-    <!-- الصف العلوي: Back و Logout في الوسط -->
     <div class="top-row">
         <button class="action-btn back-btn" onclick="window.location.href='index.html'">
             <svg viewBox="0 0 24 24">
@@ -564,7 +498,6 @@ opacity:0.5;
         </button>
     </div>
     
-    <!-- الصف السفلي: باقي الأزرار أفقية -->
     <div class="bottom-row">
         <button class="action-btn refresh-btn" onclick="window.location.reload()">
             <span>🔄</span>
@@ -589,7 +522,29 @@ opacity:0.5;
     </div>
 </div>
 
-<h1>💰 Admin Panel · Members Wallet</h1>
+<h1>💰 Admin Panel · Professional Wallet System</h1>
+
+<!-- Professional Wallet Display Section -->
+<div class="wallet-snapshot-section" id="walletSnapshotSection" style="display: none;">
+    <div class="snapshot-header">
+        <div class="snapshot-title">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+            </svg>
+            <span>Wallet Balance Snapshots</span>
+        </div>
+        <div class="snapshot-badge" id="snapshotCount">Latest Snapshot</div>
+    </div>
+    
+    <!-- Horizontal cards container -->
+    <div class="wallet-horizontal-container" id="walletHorizontalContainer">
+        <!-- Cards will be inserted here dynamically -->
+    </div>
+    
+    <div class="snapshot-footer" id="snapshotTimestamp">
+        <!-- Timestamp will be inserted here -->
+    </div>
+</div>
 
 <!-- Summary Section -->
 <div class="summary" id="summaryContainer">
@@ -610,16 +565,6 @@ opacity:0.5;
     </div>
     <div class="box" data-person="mohamed">
         Mohamed <span id="mohamedTotal">0.00</span> <small>MAD</small>
-    </div>
-</div>
-
-<!-- POPUP Modal (Full screen) -->
-<div class="wallet-popup" id="walletPopup">
-    <div class="popup-content">
-        <button class="close-popup-btn" id="closePopupBtn">&times;</button>
-        <h2 class="popup-title" id="popupTitle">📦 Wallet History</h2>
-        <div class="popup-wallet-grid" id="popupWalletGrid"></div>
-        <div class="popup-timestamp" id="popupTimestamp"></div>
     </div>
 </div>
 
@@ -681,8 +626,10 @@ function getPersonClass(person) {
     }
 }
 
-let lastTotals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
+// Current totals (updated in real-time)
+let currentTotals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
 
+// Listen to payments and update table + main totals
 db.collection("payments")
 .orderBy("time", "desc")
 .onSnapshot(function(snapshot){
@@ -702,6 +649,7 @@ db.collection("payments")
             let mainClass = getPersonClass(data.name1);
             let secondClass = getPersonClass(data.name2);
             
+            // Calculate totals based on names
             if(data.name1?.toLowerCase() === "anas") totals.anas += half;
             if(data.name1?.toLowerCase() === "oussama") totals.oussama += half;
             if(data.name1?.toLowerCase() === "amine") totals.amine += half;
@@ -722,7 +670,10 @@ db.collection("payments")
         });
     }
 
-    lastTotals = { ...totals };
+    // Update current totals
+    currentTotals = { ...totals };
+    
+    // Update main summary
     document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
     document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
     document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
@@ -739,36 +690,23 @@ function deleteDoc(id) {
     }
 }
 
-// ========== POPUP FUNCTIONS ==========
-const walletPopup = document.getElementById('walletPopup');
-const popupWalletGrid = document.getElementById('popupWalletGrid');
-const popupTimestamp = document.getElementById('popupTimestamp');
-const closePopupBtn = document.getElementById('closePopupBtn');
-const popupTitle = document.getElementById('popupTitle');
+// ========== PROFESSIONAL WALLET DISPLAY ==========
+const walletSection = document.getElementById('walletSnapshotSection');
+const walletContainer = document.getElementById('walletHorizontalContainer');
+const snapshotTimestamp = document.getElementById('snapshotTimestamp');
+const snapshotCount = document.getElementById('snapshotCount');
 
-// Close popup when clicking X
-closePopupBtn.addEventListener('click', function() {
-    walletPopup.style.display = 'none';
-});
-
-// Close popup when pressing ESC key
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape' && walletPopup.style.display === 'block') {
-        walletPopup.style.display = 'none';
-    }
-});
-
-// Function to show wallet data in popup
-function showWalletInPopup(archive) {
+// Function to display wallet snapshot professionally
+function displayWalletSnapshot(archive) {
     const t = archive.totals || {};
     
     const personMap = [
-        { label: 'Anas', key: 'anas', class: 'person-anas', color: '#c62828' },
-        { label: 'Oussama', key: 'oussama', class: 'person-ous', color: '#1565c0' },
-        { label: 'Amine', key: 'amine', class: 'person-amine', color: '#9e6b0c' },
-        { label: 'Houssam', key: 'houssam', class: 'person-houssam', color: '#bf5e00' },
-        { label: 'Zaki', key: 'zaki', class: 'person-zaki', color: '#2e7d32' },
-        { label: 'Mohamed', key: 'mohamed', class: 'person-mohamed', color: '#6a1b9a' }
+        { label: 'Anas', key: 'anas', bgClass: 'anas-bg' },
+        { label: 'Oussama', key: 'oussama', bgClass: 'oussama-bg' },
+        { label: 'Amine', key: 'amine', bgClass: 'amine-bg' },
+        { label: 'Houssam', key: 'houssam', bgClass: 'houssam-bg' },
+        { label: 'Zaki', key: 'zaki', bgClass: 'zaki-bg' },
+        { label: 'Mohamed', key: 'mohamed', bgClass: 'mohamed-bg' }
     ];
     
     let htmlStr = '';
@@ -779,27 +717,30 @@ function showWalletInPopup(archive) {
         if (parseFloat(amount) > 0) hasData = true;
         
         htmlStr += `
-            <div class="popup-wallet-card">
-                <div class="card-person person-badge ${p.class}">${p.label}</div>
-                <div class="card-amount" style="color: ${p.color}">${amount}</div>
-                <div class="card-currency">MAD</div>
+            <div class="pro-wallet-card">
+                <div class="card-person ${p.bgClass}">${p.label}</div>
+                <div class="card-amount">${amount}</div>
+                <div class="card-currency">Moroccan Dirham</div>
             </div>
         `;
     });
     
-    if (!hasData && Object.keys(t).length === 0) {
+    if (!hasData || Object.keys(t).length === 0) {
         htmlStr = `
-            <div class="popup-no-data">
-                <span class="icon">📭</span>
-                No wallet data available
+            <div style="text-align: center; padding: 40px; color: white; width: 100%;">
+                <span style="font-size: 3rem;">📭</span>
+                <p style="font-size: 1.2rem; margin-top: 15px;">No wallet data available</p>
             </div>
         `;
     }
     
-    popupWalletGrid.innerHTML = htmlStr;
-    popupTimestamp.innerText = `📅 ${archive.formattedDate || archive.timestamp || 'Unknown date'}`;
-    walletPopup.style.display = 'block';
-    walletPopup.scrollTop = 0;
+    walletContainer.innerHTML = htmlStr;
+    snapshotTimestamp.innerHTML = `📅 ${archive.formattedDate || 'Unknown date'}`;
+    snapshotCount.innerHTML = `📊 Snapshot • ${new Date().toLocaleDateString()}`;
+    walletSection.style.display = 'block';
+    
+    // Scroll to wallet section smoothly
+    walletSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ========== FIREBASE WALLET FUNCTIONS ==========
@@ -841,12 +782,14 @@ async function loadLatestWalletSnapshot() {
     }
 }
 
+// Send wallet - Save current totals to Firebase AND CLEAR THEM
 sendBtn.addEventListener('click', async function() {
-    const totalsCopy = { ...lastTotals };
+    // Save current totals to Firebase
+    const totalsToSave = { ...currentTotals };
     const now = new Date();
     
     const walletData = {
-        totals: totalsCopy,
+        totals: totalsToSave,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         createdAt: now.toISOString(),
         formattedDate: now.toLocaleString('en-US', { 
@@ -863,21 +806,19 @@ sendBtn.addEventListener('click', async function() {
         sendBtn.innerHTML = `<span>⏳</span> Sending...`;
         sendBtn.disabled = true;
         
+        // Save to Firebase
         await db.collection("wallet_snapshots").add(walletData);
         
+        // Load and display the saved snapshot
         const archive = await loadLatestWalletSnapshot();
         if (archive) {
-            showWalletInPopup(archive);
+            displayWalletSnapshot(archive);
         }
         
-        document.getElementById("anasTotal").innerText = '0.00';
-        document.getElementById("oussamaTotal").innerText = '0.00';
-        document.getElementById("amineTotal").innerText = '0.00';
-        document.getElementById("houssamTotal").innerText = '0.00';
-        document.getElementById("zakiTotal").innerText = '0.00';
-        document.getElementById("mohamedTotal").innerText = '0.00';
-        
+        // Show success message
         sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Sent ✓`;
+        
+        // Reset button after 1.5 seconds
         setTimeout(() => {
             sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Send Wallet`;
             sendBtn.disabled = false;
@@ -891,6 +832,7 @@ sendBtn.addEventListener('click', async function() {
     }
 });
 
+// View wallet - Load and display the latest snapshot
 viewBtn.addEventListener('click', async function() {
     try {
         viewBtn.innerHTML = `<span>⏳</span> Loading...`;
@@ -899,9 +841,18 @@ viewBtn.addEventListener('click', async function() {
         const archive = await loadLatestWalletSnapshot();
         
         if (archive) {
-            showWalletInPopup(archive);
+            displayWalletSnapshot(archive);
         } else {
-            showWalletInPopup({ totals: {}, formattedDate: 'No saved snapshots' });
+            // Show empty state
+            walletContainer.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: white; width: 100%;">
+                    <span style="font-size: 3rem;">📭</span>
+                    <p style="font-size: 1.2rem; margin-top: 15px;">No saved snapshots yet</p>
+                </div>
+            `;
+            snapshotTimestamp.innerHTML = '📅 No data available';
+            snapshotCount.innerHTML = '📊 No snapshots';
+            walletSection.style.display = 'block';
         }
         
         setTimeout(() => {
@@ -913,6 +864,14 @@ viewBtn.addEventListener('click', async function() {
         alert("Could not load wallet.");
         viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/><circle cx="12" cy="12" r="2.5" fill="white" opacity="0.5"/></svg> View Wallet`;
         viewBtn.disabled = false;
+    }
+});
+
+// Load latest snapshot on page load (optional)
+window.addEventListener('load', async function() {
+    const archive = await loadLatestWalletSnapshot();
+    if (archive) {
+        displayWalletSnapshot(archive);
     }
 });
 </script>
