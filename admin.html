@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Admin Panel · Wallet forwarding (Firebase Storage)</title>
+<title>Admin Panel · Wallet Popup</title>
 
 <style>
 * {
@@ -27,152 +27,137 @@ margin: 15px 0 20px;
 font-size: 1.8em;
 }
 
-/* Header Actions */
+/* ========== HEADER ACTIONS Professional Design ========== */
 .header-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 60px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecf0;
 }
 
-/* Back Button */
-.back-btn {
-    background: #6c757d;
-    color: white;
+/* Left button group */
+.left-btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Center button group (main buttons) */
+.center-btn-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex: 1;
+}
+
+/* Right button group */
+.right-btn-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ========== Unified Button Design ========== */
+.action-btn {
+    padding: 12px 24px;
     border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
+    border-radius: 40px;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(108,117,125,0.3);
-    transition: all 0.2s;
-    font-size: 0.95em;
-    text-decoration: none;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    letter-spacing: 0.3px;
+    position: relative;
+    overflow: hidden;
 }
 
-.back-btn svg {
+.action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+
+.action-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.action-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.action-btn svg {
     width: 18px;
     height: 18px;
     fill: currentColor;
 }
 
-.back-btn:active {
-    transform: scale(0.95);
-    background: #5a6268;
-}
-
-.refresh-btn{
-padding:12px 25px;
-background:#2196f3;
-color:white;
-border:none;
-border-radius:25px;
-cursor:pointer;
-font-size:0.95em;
-font-weight:500;
-box-shadow:0 2px 8px rgba(33,150,243,0.3);
-transition: all 0.2s;
-display: inline-flex;
-align-items: center;
-gap: 5px;
-}
-
-.refresh-btn:active{
-transform:scale(0.95);
-background:#1976d2;
-}
-
-.logout-btn {
-    background: #dc3545;
+/* Button colors */
+.back-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
     color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(220,53,69,0.3);
-    transition: all 0.2s;
-    font-size: 0.95em;
 }
 
-.logout-btn:active {
-    transform: scale(0.95);
-    background: #c82333;
+.refresh-btn {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
 }
 
-/* wallet action buttons */
-.wallet-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-}
 .send-wallet-btn {
-    background: #9c27b0;
+    background: linear-gradient(135deg, #9c27b0, #7b1fa2);
     color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 40px;
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(156,39,176,0.4);
-    transition: all 0.2s;
-    font-size: 1rem;
-    letter-spacing: 0.3px;
-}
-.send-wallet-btn:active {
-    transform: scale(0.96);
-    background: #7b1fa2;
-}
-.send-wallet-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 20px rgba(156,39,176,0.4);
 }
 
 .view-wallet-btn {
-    background: #2d5f7e;
+    background: linear-gradient(135deg, #2d5f7e, #1d4e6b);
     color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 40px;
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(45,95,126,0.4);
-    transition: all 0.2s;
-    font-size: 1rem;
-}
-.view-wallet-btn:active {
-    transform: scale(0.96);
-    background: #1d3e55;
-}
-.view-wallet-btn svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    box-shadow: 0 8px 20px rgba(45,95,126,0.4);
 }
 
-/* Table Container */
+.logout-btn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+/* Main buttons larger icons */
+.send-wallet-btn svg, .view-wallet-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* ========== Table Container ========== */
 .table-container{
 overflow-x: auto;
-border-radius: 16px;
-box-shadow:0 4px 15px rgba(0,0,0,0.1);
+border-radius: 24px;
+box-shadow:0 4px 20px rgba(0,0,0,0.08);
 margin-bottom: 25px;
 background: white;
+border: 1px solid #e9ecf0;
 }
 
 table{
@@ -184,295 +169,427 @@ min-width: 700px;
 }
 
 th,td{
-padding:14px 10px;
-border:1px solid #e0e0e0;
+padding:16px 12px;
+border:1px solid #edf2f7;
 text-align:center;
 }
 
 th{
-background:#2c3e50;
+background:linear-gradient(135deg, #2c3e50, #1e2b3a);
 color:white;
 font-weight:600;
 font-size: 13px;
 white-space: nowrap;
+letter-spacing: 0.5px;
 }
 
 tr:nth-child(even){
-background:#f8f9fa;
+background:#f8fafd;
 }
 
 tr:hover{
-background:#e8f0fe;
+background:#e3f2fd;
 }
 
 /* Person badges */
 .person-badge {
     display: inline-block;
-    padding: 5px 12px;
+    padding: 6px 16px;
     border-radius: 30px;
     font-weight: 600;
     font-size: 12px;
-    min-width: 80px;
+    min-width: 90px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.person-anas { background: #ffcdd2; color: #c62828; }
-.person-ous { background: #bbdefb; color: #1565c0; }
-.person-amine { background: #fff9c4; color: #9e6b0c; }
-.person-houssam { background: #ffe0b2; color: #bf5e00; }
-.person-zaki { background: #c8e6c9; color: #2e7d32; }
-.person-mohamed { background: #e1b0ff; color: #6a1b9a; }
+.person-anas { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
+.person-ous { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1565c0; }
+.person-amine { background: #fffde7; color: #9e6b0c; border-left: 4px solid #9e6b0c; }
+.person-houssam { background: #fff3e0; color: #bf5e00; border-left: 4px solid #bf5e00; }
+.person-zaki { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+.person-mohamed { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #6a1b9a; }
 
-/* Delete button for each row */
+/* Delete button */
 .deleteBtn {
     background: #ff5252;
     color: white;
     border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 1.2em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(255,82,82,0.3);
+    box-shadow: 0 4px 10px rgba(255,82,82,0.3);
 }
 
 .deleteBtn:hover {
     background: #d32f2f;
-    transform: scale(1.05);
+    transform: scale(1.1) rotate(5deg);
 }
 
 .deleteBtn:active {
     transform: scale(0.9);
 }
 
-/* Summary Section (main totals) */
+/* Summary Section */
 .summary{
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-gap: 10px;
-margin: 20px 0 10px;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 15px;
+margin: 25px 0 20px;
 }
 
 .box{
 background: white;
-padding: 12px 8px;
-border-radius: 16px;
-box-shadow:0 2px 8px rgba(0,0,0,0.08);
+padding: 15px 10px;
+border-radius: 20px;
+box-shadow:0 4px 15px rgba(0,0,0,0.05);
 font-weight: 500;
-font-size: 0.9em;
+font-size: 0.95em;
 text-align: center;
-border: 1px solid #eaeef2;
-transition: transform 0.2s;
+border: 1px solid #eef2f6;
+transition: all 0.3s;
+backdrop-filter: blur(5px);
 }
 
-.box:active{
-transform: scale(0.98);
+.box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
 .box span{
 display: block;
-font-size: 1.3em;
+font-size: 1.5em;
 font-weight: 700;
-margin-top: 5px;
-color: #2c3e50;
+margin-top: 8px;
+color: #1e2b3a;
 }
 
 /* Person-specific summary colors */
-.box[data-person="anas"] { border-top: 4px solid #c62828; }
-.box[data-person="oussama"] { border-top: 4px solid #1565c0; }
-.box[data-person="amine"] { border-top: 4px solid #9e6b0c; }
-.box[data-person="houssam"] { border-top: 4px solid #bf5e00; }
-.box[data-person="zaki"] { border-top: 4px solid #2e7d32; }
-.box[data-person="mohamed"] { border-top: 4px solid #6a1b9a; }
+.box[data-person="anas"] { 
+    border-bottom: 4px solid #c62828;
+    background: linear-gradient(to bottom, #ffffff, #ffebee);
+}
+.box[data-person="oussama"] { 
+    border-bottom: 4px solid #1565c0;
+    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
+}
+.box[data-person="amine"] { 
+    border-bottom: 4px solid #9e6b0c;
+    background: linear-gradient(to bottom, #ffffff, #fffde7);
+}
+.box[data-person="houssam"] { 
+    border-bottom: 4px solid #bf5e00;
+    background: linear-gradient(to bottom, #ffffff, #fff3e0);
+}
+.box[data-person="zaki"] { 
+    border-bottom: 4px solid #2e7d32;
+    background: linear-gradient(to bottom, #ffffff, #e8f5e9);
+}
+.box[data-person="mohamed"] { 
+    border-bottom: 4px solid #6a1b9a;
+    background: linear-gradient(to bottom, #ffffff, #f3e5f5);
+}
 
 .box small {
     color: #666;
     font-size: 0.75em;
     display: block;
-    margin-top: 2px;
+    margin-top: 5px;
 }
 
-/* Wallet snapshot section (View Wallet) */
-.wallet-snapshot {
-    background: white;
-    border-radius: 24px;
-    padding: 20px 18px;
-    margin: 25px 0 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-    border: 1px solid #d0dae8;
+/* ========== POPUP MODAL (Full screen) ========== */
+.wallet-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.98);
+    z-index: 9999;
+    overflow-y: auto;
+    padding: 30px 20px;
+    animation: fadeIn 0.3s ease;
 }
 
-.snapshot-header {
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.popup-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 100%;
+}
+
+/* Close button X */
+.close-popup-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 32px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    font-size: 1.3rem;
-    font-weight: 600;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(244,67,54,0.4);
+    transition: all 0.3s;
+    z-index: 10000;
+}
+
+.close-popup-btn:hover {
+    transform: rotate(90deg) scale(1.1);
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+}
+
+.popup-title {
+    font-size: 2.5rem;
     color: #1e2b3a;
-    border-bottom: 2px dashed #b0c4de;
-    padding-bottom: 12px;
-}
-.snapshot-header svg {
-    width: 28px;
-    height: 28px;
-    fill: #1e2b3a;
-}
-
-.wallet-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px 30px;
-    justify-content: flex-start;
-    align-items: center;
-}
-.wallet-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 95px;
-    padding: 10px 8px;
-    background: #f8faff;
-    border-radius: 28px;
-    border: 1px solid #cddaea;
-    transition: 0.1s;
-}
-.wallet-item .wallet-person {
-    font-weight: 700;
-    font-size: 1rem;
-}
-.wallet-item .wallet-amount {
+    margin: 20px 0 40px;
+    padding-right: 70px;
+    border-bottom: 4px solid #9c27b0;
+    padding-bottom: 15px;
+    display: inline-block;
+    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: 800;
-    font-size: 1.4rem;
-    line-height: 1.3;
-    color: #1b3b4f;
-}
-.wallet-item .wallet-currency {
-    font-size: 0.7rem;
-    opacity: 0.7;
-}
-.wallet-timestamp {
-    margin-left: auto;
-    font-size: 0.85rem;
-    color: #4a5b6b;
-    background: #eaeff5;
-    padding: 6px 16px;
-    border-radius: 40px;
-    white-space: nowrap;
 }
 
-/* No data state */
+.popup-wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.popup-wallet-card {
+    background: white;
+    border-radius: 30px;
+    padding: 35px 25px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border: 1px solid #eef2f6;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.popup-wallet-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #9c27b0, #ff9800);
+}
+
+.popup-wallet-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+}
+
+.popup-wallet-card .card-person {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding: 12px 25px;
+    display: inline-block;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.popup-wallet-card .card-amount {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 15px 0 5px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.popup-wallet-card .card-currency {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.popup-timestamp {
+    text-align: center;
+    font-size: 1.3rem;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    padding: 18px 35px;
+    border-radius: 60px;
+    display: inline-block;
+    margin: 40px 0 20px;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.popup-no-data {
+    text-align: center;
+    padding: 100px 20px;
+    font-size: 2rem;
+    color: #999;
+    background: #f8f9fa;
+    border-radius: 50px;
+}
+
+.popup-no-data .icon {
+    font-size: 6rem;
+    margin-bottom: 25px;
+    display: block;
+}
+
+/* No data state for table */
 .no-data{
 text-align:center;
-padding:50px 20px;
+padding:60px 20px;
 background:white;
-border-radius:16px;
+border-radius:24px;
 color:#666;
-font-size:1.1em;
+font-size:1.2em;
+border: 1px solid #e9ecf0;
 }
 
 .no-data-icon{
-font-size:3.5em;
-margin-bottom:15px;
+font-size:4em;
+margin-bottom:20px;
 opacity:0.5;
 }
 
 /* Responsive */
-@media (min-width: 768px) {
-    body {
-        padding: 30px;
+@media (max-width: 768px) {
+    .header-actions {
+        border-radius: 30px;
+        padding: 15px;
     }
     
-    h1 {
-        font-size: 2.2em;
+    .center-btn-group {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .send-wallet-btn, .view-wallet-btn {
+        padding: 12px 20px;
+        font-size: 1rem;
     }
     
     .summary {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 15px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
     }
     
     .box {
-        padding: 15px 10px;
-        font-size: 1em;
+        padding: 10px 5px;
     }
     
     .box span {
-        font-size: 1.5em;
+        font-size: 1.2em;
     }
     
-    table {
-        font-size: 15px;
-        min-width: auto;
+    .popup-wallet-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .popup-title {
+        font-size: 1.8rem;
     }
 }
 
-/* تنسيق شريط التمرير */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .popup-wallet-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Scrollbar styling */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
 }
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #2c3e50;
-    border-radius: 5px;
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #1a252f;
+    background: linear-gradient(135deg, #1a252f, #0f1a22);
 }
 
 </style>
 </head>
-
 <body>
 
-<!-- Header Actions + Wallet Buttons integrated -->
+<!-- Header Actions with Professional Design -->
 <div class="header-actions">
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <!-- Back Button with left arrow SVG -->
-        <button class="back-btn" onclick="window.location.href='index.html'">
+    <!-- Left button group -->
+    <div class="left-btn-group">
+        <button class="action-btn back-btn" onclick="window.location.href='index.html'">
             <svg viewBox="0 0 24 24">
                 <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
             </svg>
-            Back
+            <span>Back</span>
         </button>
         
-        <button class="refresh-btn" onclick="window.location.reload()">
-            <span>🔄</span> Refresh Data
+        <button class="action-btn refresh-btn" onclick="window.location.reload()">
+            <span>🔄</span>
+            <span>Refresh</span>
         </button>
     </div>
     
-    <!-- New wallet action group (stylish and bound) -->
-    <div class="wallet-actions">
-        <!-- SEND WALLET button – hides main totals after sending to Firebase -->
-        <button class="send-wallet-btn" id="sendWalletBtn">
-            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg>
-            Send Wallet
+    <!-- Center button group (main buttons) -->
+    <div class="center-btn-group">
+        <button class="action-btn send-wallet-btn" id="sendWalletBtn">
+            <svg viewBox="0 0 24 24">
+                <path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/>
+                <circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/>
+            </svg>
+            <span>Send Wallet</span>
         </button>
-        <!-- VIEW WALLET button – shows the latest archived snapshot from Firebase -->
-        <button class="view-wallet-btn" id="viewWalletBtn">
-            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-            View wallet
+        
+        <button class="action-btn view-wallet-btn" id="viewWalletBtn">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+                <circle cx="12" cy="12" r="2.5" fill="white" opacity="0.5"/>
+            </svg>
+            <span>View Wallet</span>
         </button>
     </div>
     
-    <button class="logout-btn" onclick="logout()">
-        <span>🚪</span> Logout
-    </button>
+    <!-- Right button group -->
+    <div class="right-btn-group">
+        <button class="action-btn logout-btn" onclick="logout()">
+            <span>🚪</span>
+            <span>Logout</span>
+        </button>
+    </div>
 </div>
 
-<h1>💰 Admin Panel · wallet forward (Firebase)</h1>
+<h1>💰 Admin Panel · Members Wallet</h1>
 
-<!-- Summary Section (main totals) – these will be cleared visually on send -->
+<!-- Summary Section -->
 <div class="summary" id="summaryContainer">
     <div class="box" data-person="anas">
         Anas <span id="anasTotal">0.00</span> <small>MAD</small>
@@ -494,16 +611,14 @@ opacity:0.5;
     </div>
 </div>
 
-<!-- View Wallet area (shows archived totals with timestamp from Firebase) -->
-<div class="wallet-snapshot" id="walletSnapshotArea" style="display: none;">
-    <div class="snapshot-header">
-        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-        <span>📦 Archived wallet · snapshot (from Firebase)</span>
+<!-- POPUP Modal (Full screen) -->
+<div class="wallet-popup" id="walletPopup">
+    <div class="popup-content">
+        <button class="close-popup-btn" id="closePopupBtn">&times;</button>
+        <h2 class="popup-title" id="popupTitle">📦 Wallet History</h2>
+        <div class="popup-wallet-grid" id="popupWalletGrid"></div>
+        <div class="popup-timestamp" id="popupTimestamp"></div>
     </div>
-    <div id="walletContent" class="wallet-grid">
-        <!-- dynamic content from Firebase -->
-    </div>
-    <div class="wallet-timestamp" id="walletTimestamp"></div>
 </div>
 
 <!-- Table Container -->
@@ -513,15 +628,13 @@ opacity:0.5;
             <tr>
                 <th>Main</th>
                 <th>Second</th>
-                <th>Price MAD</th>
+                <th>Price (MAD)</th>
                 <th>Description</th>
                 <th>Time</th>
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
-            <!-- Data will be inserted here -->
-        </tbody>
+        <tbody id="tableBody"></tbody>
     </table>
 </div>
 
@@ -530,34 +643,30 @@ opacity:0.5;
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-
 // Check authentication
 if (sessionStorage.getItem('isAuthenticated') !== 'true') {
     window.location.href = 'login.html';
 }
 
-// Logout function
 function logout() {
     sessionStorage.removeItem('isAuthenticated');
     window.location.href = 'login.html';
 }
 
 const firebaseConfig = {
-apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
-authDomain: "deliverymarrakech.firebaseapp.com",
-projectId: "deliverymarrakech",
-storageBucket: "deliverymarrakech.firebasestorage.app",
-messagingSenderId: "543072772322",
-appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
-measurementId: "G-YMXBJFJ9N8"
+    apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
+    authDomain: "deliverymarrakech.firebaseapp.com",
+    projectId: "deliverymarrakech",
+    storageBucket: "deliverymarrakech.firebasestorage.app",
+    messagingSenderId: "543072772322",
+    appId: "1:543072772322:web:468d0c047e06c86bde7ebb",
+    measurementId: "G-YMXBJFJ9N8"
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const db = firebase.firestore();
 const tableBody = document.getElementById("tableBody");
 
-// Helper function to get person class for styling
 function getPersonClass(person) {
     switch(person?.toLowerCase()) {
         case "anas": return "person-anas"
@@ -570,129 +679,131 @@ function getPersonClass(person) {
     }
 }
 
-// totals variable to keep last computed (for send)
-let lastTotals = {
-    anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0
-};
+let lastTotals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
 
-// Listen to payments and update table + main summary
 db.collection("payments")
-.orderBy("time","desc")
+.orderBy("time", "desc")
 .onSnapshot(function(snapshot){
+    tableBody.innerHTML = "";
+    let totals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
 
-tableBody.innerHTML = "";
-
-// Initialize totals
-let totals = {
-    anas: 0,
-    oussama: 0,
-    amine: 0,
-    houssam: 0,
-    zaki: 0,
-    mohamed: 0
-};
-
-if (snapshot.empty) {
-    let row = document.createElement("tr");
-    row.innerHTML = `
-        <td colspan="6" style="padding: 0;">
-            <div class="no-data">
-                <div class="no-data-icon">📭</div>
-                No payment records found
-            </div>
-        </td>
-    `;
-    tableBody.appendChild(row);
-} else {
-    snapshot.forEach(function(doc){
-        let data = doc.data();
+    if (snapshot.empty) {
         let row = document.createElement("tr");
-        
-        let price = parseFloat(data.price) || 0;
-        let half = price / 2;
-        
-        let mainClass = getPersonClass(data.name1);
-        let secondClass = getPersonClass(data.name2);
-        
-        // Totals logic (same as original)
-        if(data.name1?.toLowerCase() === "anas") totals.anas += half;
-        if(data.name1?.toLowerCase() === "oussama") totals.oussama += half;
-        if(data.name1?.toLowerCase() === "amine") totals.amine += half;
-        if(data.name2?.toLowerCase() === "houssam") totals.houssam += half;
-        if(data.name2?.toLowerCase() === "zaki") totals.zaki += half;
-        if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half;
-        if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half;
-
-        row.innerHTML = `
-        <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
-        <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
-        <td><strong>${price.toFixed(2)} MAD</strong></td>
-        <td>${data.description || '-'}</td>
-        <td>${data.time ? new Date(data.time.seconds*1000).toLocaleString() : 'N/A'}</td>
-        <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')" title="Delete this record">🗑️</button></td>
-        `;
-
+        row.innerHTML = `<td colspan="6"><div class="no-data"><div class="no-data-icon">📭</div>No payment records found</div></td>`;
         tableBody.appendChild(row);
-    });
-}
+    } else {
+        snapshot.forEach(function(doc){
+            let data = doc.data();
+            let row = document.createElement("tr");
+            let price = parseFloat(data.price) || 0;
+            let half = price / 2;
+            let mainClass = getPersonClass(data.name1);
+            let secondClass = getPersonClass(data.name2);
+            
+            if(data.name1?.toLowerCase() === "anas") totals.anas += half;
+            if(data.name1?.toLowerCase() === "oussama") totals.oussama += half;
+            if(data.name1?.toLowerCase() === "amine") totals.amine += half;
+            if(data.name2?.toLowerCase() === "houssam") totals.houssam += half;
+            if(data.name2?.toLowerCase() === "zaki") totals.zaki += half;
+            if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half;
+            if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half;
 
-// keep a copy for send wallet
-lastTotals = {...totals};
+            row.innerHTML = `
+            <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
+            <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
+            <td><strong>${price.toFixed(2)}</strong></td>
+            <td>${data.description || '-'}</td>
+            <td>${data.time ? new Date(data.time.seconds * 1000).toLocaleString() : 'N/A'}</td>
+            <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')">🗑️</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
-// Update main summary
-document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
-document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
-document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
-document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2);
-document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2);
-document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2);
+    lastTotals = { ...totals };
+    document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
+    document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
+    document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
+    document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2);
+    document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2);
+    document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2);
+});
 
-}); // end snapshot
-
-function deleteDoc(id){
+function deleteDoc(id) {
     if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
         db.collection("payments").doc(id).delete()
-            .then(() => console.log("deleted"))
-            .catch(err => { alert("Error: "+ err); });
+            .then(() => console.log("Document deleted"))
+            .catch(err => alert("Error: " + err));
     }
 }
 
-// ---------- WALLET LOGIC WITH FIREBASE (ACTUAL MEMORY) ----------
-const sendBtn = document.getElementById('sendWalletBtn');
-const viewBtn = document.getElementById('viewWalletBtn');
-const walletArea = document.getElementById('walletSnapshotArea');
-const walletContent = document.getElementById('walletContent');
-const walletTimestamp = document.getElementById('walletTimestamp');
+// ========== POPUP FUNCTIONS ==========
+const walletPopup = document.getElementById('walletPopup');
+const popupWalletGrid = document.getElementById('popupWalletGrid');
+const popupTimestamp = document.getElementById('popupTimestamp');
+const closePopupBtn = document.getElementById('closePopupBtn');
+const popupTitle = document.getElementById('popupTitle');
 
-// Function to render wallet snapshot in UI
-function renderWalletSnapshot(archive) {
-    // archive = { totals: {anas, oussama, amine, houssam, zaki, mohamed}, timestamp: '...', formattedDate: '...' }
+// Close popup when clicking X
+closePopupBtn.addEventListener('click', function() {
+    walletPopup.style.display = 'none';
+});
+
+// Close popup when pressing ESC key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && walletPopup.style.display === 'block') {
+        walletPopup.style.display = 'none';
+    }
+});
+
+// Function to show wallet data in popup
+function showWalletInPopup(archive) {
     const t = archive.totals || {};
+    
     const personMap = [
-        { label: 'Anas', key: 'anas', class:'person-anas' },
-        { label: 'Oussama', key: 'oussama', class:'person-ous' },
-        { label: 'Amine', key: 'amine', class:'person-amine' },
-        { label: 'Houssam', key: 'houssam', class:'person-houssam' },
-        { label: 'Zaki', key: 'zaki', class:'person-zaki' },
-        { label: 'Mohamed', key: 'mohamed', class:'person-mohamed' }
+        { label: 'Anas', key: 'anas', class: 'person-anas', color: '#c62828' },
+        { label: 'Oussama', key: 'oussama', class: 'person-ous', color: '#1565c0' },
+        { label: 'Amine', key: 'amine', class: 'person-amine', color: '#9e6b0c' },
+        { label: 'Houssam', key: 'houssam', class: 'person-houssam', color: '#bf5e00' },
+        { label: 'Zaki', key: 'zaki', class: 'person-zaki', color: '#2e7d32' },
+        { label: 'Mohamed', key: 'mohamed', class: 'person-mohamed', color: '#6a1b9a' }
     ];
+    
     let htmlStr = '';
+    let hasData = false;
+    
     personMap.forEach(p => {
         let amount = (t[p.key] || 0).toFixed(2);
+        if (parseFloat(amount) > 0) hasData = true;
+        
         htmlStr += `
-            <div class="wallet-item" style="border-left: 5px solid var(--${p.key}-color, #aaa); background: #f3f6fd;">
-                <span class="wallet-person person-badge ${p.class}">${p.label}</span>
-                <span class="wallet-amount">${amount}</span>
-                <span class="wallet-currency">MAD</span>
+            <div class="popup-wallet-card">
+                <div class="card-person person-badge ${p.class}">${p.label}</div>
+                <div class="card-amount" style="color: ${p.color}">${amount}</div>
+                <div class="card-currency">MAD</div>
             </div>
         `;
     });
-    walletContent.innerHTML = htmlStr;
-    walletTimestamp.innerText = `📅 ${archive.formattedDate || archive.timestamp || 'Unknown date'}`;
-    walletArea.style.display = 'block';
+    
+    if (!hasData && Object.keys(t).length === 0) {
+        htmlStr = `
+            <div class="popup-no-data">
+                <span class="icon">📭</span>
+                No wallet data available
+            </div>
+        `;
+    }
+    
+    popupWalletGrid.innerHTML = htmlStr;
+    popupTimestamp.innerText = `📅 ${archive.formattedDate || archive.timestamp || 'Unknown date'}`;
+    walletPopup.style.display = 'block';
+    walletPopup.scrollTop = 0;
 }
 
-// Load the latest wallet snapshot from Firebase when page loads
+// ========== FIREBASE WALLET FUNCTIONS ==========
+const sendBtn = document.getElementById('sendWalletBtn');
+const viewBtn = document.getElementById('viewWalletBtn');
+
 async function loadLatestWalletSnapshot() {
     try {
         const snapshot = await db.collection("wallet_snapshots")
@@ -702,57 +813,61 @@ async function loadLatestWalletSnapshot() {
         
         if (!snapshot.empty) {
             const data = snapshot.docs[0].data();
-            // Convert Firestore timestamp to readable date
             let formattedDate = 'Unknown date';
             if (data.timestamp) {
                 const date = data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
-                formattedDate = date.toLocaleString();
+                formattedDate = date.toLocaleString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
             }
             
-            const archive = {
+            return {
                 totals: data.totals || {},
                 timestamp: data.timestamp,
                 formattedDate: formattedDate
             };
-            
-            renderWalletSnapshot(archive);
         }
+        return null;
     } catch (error) {
         console.error("Error loading wallet snapshot: ", error);
+        return null;
     }
 }
 
-// Call on page load
-loadLatestWalletSnapshot();
-
-// Send wallet: save to Firebase, then clear main totals
 sendBtn.addEventListener('click', async function() {
-    // get lastTotals (already updated by snapshot)
-    const totalsCopy = {...lastTotals};
-    
-    // create archive object with timestamp
+    const totalsCopy = { ...lastTotals };
     const now = new Date();
     
-    // Prepare data for Firebase
     const walletData = {
         totals: totalsCopy,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Server timestamp
-        createdAt: now.toISOString(), // Backup string date
-        formattedDate: now.toLocaleString()
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: now.toISOString(),
+        formattedDate: now.toLocaleString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })
     };
     
     try {
-        // Show loading state on button
         sendBtn.innerHTML = `<span>⏳</span> Sending...`;
         sendBtn.disabled = true;
         
-        // Save to Firebase 'wallet_snapshots' collection
         await db.collection("wallet_snapshots").add(walletData);
         
-        // Load the latest snapshot (which will be the one we just added)
-        await loadLatestWalletSnapshot();
+        const archive = await loadLatestWalletSnapshot();
+        if (archive) {
+            showWalletInPopup(archive);
+        }
         
-        // clear main summary boxes (hide totals - set to 0.00 visually)
         document.getElementById("anasTotal").innerText = '0.00';
         document.getElementById("oussamaTotal").innerText = '0.00';
         document.getElementById("amineTotal").innerText = '0.00';
@@ -760,57 +875,45 @@ sendBtn.addEventListener('click', async function() {
         document.getElementById("zakiTotal").innerText = '0.00';
         document.getElementById("mohamedTotal").innerText = '0.00';
         
-        // Show success feedback
-        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet ✓`;
+        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Sent ✓`;
         setTimeout(() => {
-            sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet`;
+            sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Send Wallet`;
             sendBtn.disabled = false;
         }, 1500);
         
     } catch (error) {
         console.error("Error saving wallet snapshot: ", error);
-        alert("Failed to save wallet snapshot. Check console.");
-        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet`;
+        alert("Failed to save wallet. Check connection.");
+        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Send Wallet`;
         sendBtn.disabled = false;
     }
 });
 
-// View wallet: load the latest snapshot from Firebase
 viewBtn.addEventListener('click', async function() {
     try {
         viewBtn.innerHTML = `<span>⏳</span> Loading...`;
         viewBtn.disabled = true;
         
-        await loadLatestWalletSnapshot();
+        const archive = await loadLatestWalletSnapshot();
         
-        // scroll to it smoothly
-        walletArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (archive) {
+            showWalletInPopup(archive);
+        } else {
+            showWalletInPopup({ totals: {}, formattedDate: 'No saved snapshots' });
+        }
         
         setTimeout(() => {
-            viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> View wallet`;
+            viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/><circle cx="12" cy="12" r="2.5" fill="white" opacity="0.5"/></svg> View Wallet`;
             viewBtn.disabled = false;
         }, 800);
     } catch (error) {
         console.error("Error loading snapshot: ", error);
-        alert("Could not load wallet snapshot.");
-        viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> View wallet`;
+        alert("Could not load wallet.");
+        viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/><circle cx="12" cy="12" r="2.5" fill="white" opacity="0.5"/></svg> View Wallet`;
         viewBtn.disabled = false;
     }
 });
-
 </script>
-
-<!-- subtle style variable for wallet item consistency -->
-<style>
-    .wallet-item { box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .person-anas + .wallet-amount { color: #c62828; }
-    .person-ous + .wallet-amount { color: #1565c0; }
-    .person-amine + .wallet-amount { color: #9e6b0c; }
-    .person-houssam + .wallet-amount { color: #bf5e00; }
-    .person-zaki + .wallet-amount { color: #2e7d32; }
-    .person-mohamed + .wallet-amount { color: #6a1b9a; }
-    .wallet-item .person-badge { margin-bottom: 5px; }
-</style>
 
 </body>
 </html>
