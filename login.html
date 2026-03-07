@@ -153,32 +153,32 @@ input:focus {
 
 <div class="login-container">
     <h1>🔐 Admin Login</h1>
-    <div class="subtitle">Please enter your credentials to access the admin panel</div>
+    <div class="subtitle">Please enter your credentials</div>
     
     <div class="input-group">
         <label>Username</label>
-        <input type="text" id="username" placeholder="Enter username" autocomplete="off">
+        <input type="text" id="username" placeholder="Enter username" value="admin" autocomplete="off">
     </div>
     
     <div class="input-group">
         <label>Password</label>
         <div class="password-container">
-            <input type="password" id="password" placeholder="Enter password">
+            <input type="password" id="password" placeholder="Enter password" value="admin123">
             <span class="toggle-password" onclick="togglePassword()">👁️</span>
         </div>
     </div>
     
-    <button class="login-btn" onclick="login()">Login to Dashboard</button>
+    <button class="login-btn" onclick="login()">Login</button>
     
     <div class="error-message" id="errorMessage"></div>
     
     <div class="security-note">
-        <i>⚡</i> Authorized personnel only <i>⚡</i>
+        <i>⚡</i> Default: admin / admin123 <i>⚡</i>
     </div>
 </div>
 
 <script>
-// Hardcoded credentials (you can change these)
+// Hardcoded credentials
 const VALID_USERNAME = "admin";
 const VALID_PASSWORD = "admin123";
 
@@ -211,11 +211,26 @@ function login() {
     
     // Check credentials
     if (username === VALID_USERNAME && password === VALID_PASSWORD) {
-        // Set login flag in sessionStorage
+        // Set login flags for all pages
+        const authTime = Date.now();
+        
+        // استخدام نفس المفاتيح في كل الصفحات
+        sessionStorage.setItem('delivery_auth', 'true');
+        sessionStorage.setItem('delivery_auth_time', authTime);
+        
+        // نسخة احتياطية في localStorage
+        localStorage.setItem('delivery_auth', 'true');
+        localStorage.setItem('delivery_auth_time', authTime);
+        
+        // الاحتفاظ بالتوافق مع الكود القديم
         sessionStorage.setItem('isAuthenticated', 'true');
         
-        // Redirect to admin panel
-        window.location.href = 'admin.html';
+        // التحقق من وجود صفحة مقصودة
+        const redirectUrl = sessionStorage.getItem('redirect_after_login') || 'admin.html';
+        sessionStorage.removeItem('redirect_after_login');
+        
+        // إعادة التوجيه
+        window.location.href = redirectUrl;
     } else {
         errorMessage.textContent = 'Invalid username or password';
         
@@ -240,7 +255,7 @@ style.textContent = `
 document.head.appendChild(style);
 
 // Check if already logged in
-if (sessionStorage.getItem('isAuthenticated') === 'true') {
+if (sessionStorage.getItem('delivery_auth') === 'true' || localStorage.getItem('delivery_auth') === 'true') {
     window.location.href = 'admin.html';
 }
 
