@@ -464,6 +464,26 @@ body {
     cursor: pointer;
 }
 
+/* Logout button */
+.logout-btn {
+    background: rgba(255,82,82,0.2);
+    border: 1px solid #ff5252;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .header {
@@ -510,11 +530,17 @@ body {
                 </svg>
                 Export
             </button>
-            <button class="back-btn" onclick="window.location.href='admin.html'">
+            <button class="back-btn" onclick="goToAdmin()">
                 <svg viewBox="0 0 24 24">
                     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
                 </svg>
-                Back
+                Admin Panel
+            </button>
+            <button class="logout-btn" onclick="logout()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                </svg>
+                Logout
             </button>
         </div>
     </div>
@@ -632,53 +658,69 @@ body {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// ========== نظام المصادقة ==========
+// ========== التحقق من المصادقة ==========
 (function() {
-    // دالة للتحقق من المصادقة
-    function checkAuthentication() {
-        // محاولة القراءة من sessionStorage أولاً
-        let isAuthenticated = sessionStorage.getItem('delivery_auth');
-        let authTime = sessionStorage.getItem('delivery_auth_time');
-        
-        // إذا لم تكن موجودة في sessionStorage، جرب localStorage كنسخة احتياطية
-        if (!isAuthenticated) {
-            isAuthenticated = localStorage.getItem('delivery_auth');
-            authTime = localStorage.getItem('delivery_auth_time');
-            
-            // إذا وجدت في localStorage، انسخها إلى sessionStorage
-            if (isAuthenticated) {
-                sessionStorage.setItem('delivery_auth', isAuthenticated);
-                sessionStorage.setItem('delivery_auth_time', authTime);
-            }
-        }
-        
-        // التحقق من صحة المصادقة
+    console.log('Checking authentication...');
+    
+    function checkAuth() {
+        // التحقق من وجود جلسة صالحة
+        const isAuth = sessionStorage.getItem('delivery_auth') === 'true';
+        const authTime = sessionStorage.getItem('delivery_auth_time');
         const now = Date.now();
-        const eightHours = 8 * 60 * 60 * 1000; // 8 ساعات
+        const eightHours = 8 * 60 * 60 * 1000;
         
-        if (isAuthenticated === 'true' && authTime && (now - parseInt(authTime)) < eightHours) {
-            // جلسة صالحة
+        // التحقق من localStorage كنسخة احتياطية
+        const localAuth = localStorage.getItem('delivery_auth') === 'true';
+        const localTime = localStorage.getItem('delivery_auth_time');
+        
+        if (isAuth && authTime && (now - parseInt(authTime)) < eightHours) {
+            console.log('Session authentication valid');
+            return true;
+        } else if (localAuth && localTime && (now - parseInt(localTime)) < eightHours) {
+            // استعادة الجلسة من localStorage
+            console.log('Restoring session from localStorage');
+            sessionStorage.setItem('delivery_auth', 'true');
+            sessionStorage.setItem('delivery_auth_time', localTime);
             return true;
         } else {
-            // جلسة منتهية أو غير موجودة
-            // تنظيف أي بيانات قديمة
-            sessionStorage.removeItem('delivery_auth');
-            sessionStorage.removeItem('delivery_auth_time');
-            localStorage.removeItem('delivery_auth');
-            localStorage.removeItem('delivery_auth_time');
+            console.log('No valid session, redirecting to login');
             
-            // إعادة التوجيه إلى صفحة تسجيل الدخول
+            // حفظ الصفحة المطلوبة لإعادة التوجيه بعد login
+            sessionStorage.setItem('redirect_after_login', 'operations.html');
+            
+            // إعادة التوجيه إلى صفحة login
             window.location.replace('login.html');
             return false;
         }
     }
     
     // تنفيذ التحقق
-    if (!checkAuthentication()) {
-        // إيقاف تنفيذ باقي الكود
+    if (!checkAuth()) {
         throw new Error('Authentication required');
     }
 })();
+
+// ========== دوال التنقل ==========
+function goToAdmin() {
+    // التحقق من الجلسة قبل الانتقال
+    if (sessionStorage.getItem('delivery_auth') === 'true' || localStorage.getItem('delivery_auth') === 'true') {
+        window.location.href = 'admin.html';
+    } else {
+        sessionStorage.setItem('redirect_after_login', 'admin.html');
+        window.location.href = 'login.html';
+    }
+}
+
+function logout() {
+    // تنظيف جميع بيانات الجلسة
+    sessionStorage.removeItem('delivery_auth');
+    sessionStorage.removeItem('delivery_auth_time');
+    localStorage.removeItem('delivery_auth');
+    localStorage.removeItem('delivery_auth_time');
+    
+    // إعادة التوجيه إلى login
+    window.location.href = 'login.html';
+}
 
 // ========== تهيئة Firebase ==========
 const firebaseConfig = {
@@ -1149,6 +1191,8 @@ setupListener();
 window.deleteOp = deleteOp;
 window.changePage = changePage;
 window.exportToCSV = exportToCSV;
+window.goToAdmin = goToAdmin;
+window.logout = logout;
 </script>
 
 </body>
