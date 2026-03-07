@@ -6,7 +6,6 @@
 <title>System</title>
 
 <style>
-
 body{
 font-family:Arial;
 padding:20px;
@@ -131,11 +130,17 @@ let mainName=""
 let secondName=""
 
 /* admin */
-
 document.getElementById("adminBtn").onclick=function(){
-
-window.location.href="admin.html"
-
+// التحقق مما إذا كان المستخدم مسجل الدخول قبل الذهاب إلى admin
+const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' || 
+               sessionStorage.getItem('delivery_auth') === 'true' ||
+               localStorage.getItem('delivery_auth') === 'true';
+    
+if (isAuth) {
+    window.location.href = "admin.html";
+} else {
+    window.location.href = "login.html"; // أو index.html إذا كانت صفحة تسجيل الدخول هي نفسها
+}
 }
 
 /* step1 */
