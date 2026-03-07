@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Admin Panel - Payment Records</title>
+<title>Admin Panel · Wallet forwarding (Firebase Storage)</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -109,6 +108,64 @@ background:#1976d2;
     background: #c82333;
 }
 
+/* wallet action buttons */
+.wallet-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.send-wallet-btn {
+    background: #9c27b0;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(156,39,176,0.4);
+    transition: all 0.2s;
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+}
+.send-wallet-btn:active {
+    transform: scale(0.96);
+    background: #7b1fa2;
+}
+.send-wallet-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+.view-wallet-btn {
+    background: #2d5f7e;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(45,95,126,0.4);
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+.view-wallet-btn:active {
+    transform: scale(0.96);
+    background: #1d3e55;
+}
+.view-wallet-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
 /* Table Container */
 .table-container{
 overflow-x: auto;
@@ -191,7 +248,7 @@ background:#e8f0fe;
     transform: scale(0.9);
 }
 
-/* Summary Section */
+/* Summary Section (main totals) */
 .summary{
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -236,6 +293,75 @@ color: #2c3e50;
     font-size: 0.75em;
     display: block;
     margin-top: 2px;
+}
+
+/* Wallet snapshot section (View Wallet) */
+.wallet-snapshot {
+    background: white;
+    border-radius: 24px;
+    padding: 20px 18px;
+    margin: 25px 0 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    border: 1px solid #d0dae8;
+}
+
+.snapshot-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1e2b3a;
+    border-bottom: 2px dashed #b0c4de;
+    padding-bottom: 12px;
+}
+.snapshot-header svg {
+    width: 28px;
+    height: 28px;
+    fill: #1e2b3a;
+}
+
+.wallet-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 30px;
+    justify-content: flex-start;
+    align-items: center;
+}
+.wallet-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 95px;
+    padding: 10px 8px;
+    background: #f8faff;
+    border-radius: 28px;
+    border: 1px solid #cddaea;
+    transition: 0.1s;
+}
+.wallet-item .wallet-person {
+    font-weight: 700;
+    font-size: 1rem;
+}
+.wallet-item .wallet-amount {
+    font-weight: 800;
+    font-size: 1.4rem;
+    line-height: 1.3;
+    color: #1b3b4f;
+}
+.wallet-item .wallet-currency {
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+.wallet-timestamp {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: #4a5b6b;
+    background: #eaeff5;
+    padding: 6px 16px;
+    border-radius: 40px;
+    white-space: nowrap;
 }
 
 /* No data state */
@@ -309,7 +435,7 @@ opacity:0.5;
 
 <body>
 
-<!-- Header Actions -->
+<!-- Header Actions + Wallet Buttons integrated -->
 <div class="header-actions">
     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <!-- Back Button with left arrow SVG -->
@@ -325,14 +451,28 @@ opacity:0.5;
         </button>
     </div>
     
+    <!-- New wallet action group (stylish and bound) -->
+    <div class="wallet-actions">
+        <!-- SEND WALLET button – hides main totals after sending to Firebase -->
+        <button class="send-wallet-btn" id="sendWalletBtn">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg>
+            Send Wallet
+        </button>
+        <!-- VIEW WALLET button – shows the latest archived snapshot from Firebase -->
+        <button class="view-wallet-btn" id="viewWalletBtn">
+            <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            View wallet
+        </button>
+    </div>
+    
     <button class="logout-btn" onclick="logout()">
         <span>🚪</span> Logout
     </button>
 </div>
 
-<h1>💰 Admin Panel</h1>
+<h1>💰 Admin Panel · wallet forward (Firebase)</h1>
 
-<!-- Summary Section -->
+<!-- Summary Section (main totals) – these will be cleared visually on send -->
 <div class="summary" id="summaryContainer">
     <div class="box" data-person="anas">
         Anas <span id="anasTotal">0.00</span> <small>MAD</small>
@@ -352,6 +492,18 @@ opacity:0.5;
     <div class="box" data-person="mohamed">
         Mohamed <span id="mohamedTotal">0.00</span> <small>MAD</small>
     </div>
+</div>
+
+<!-- View Wallet area (shows archived totals with timestamp from Firebase) -->
+<div class="wallet-snapshot" id="walletSnapshotArea" style="display: none;">
+    <div class="snapshot-header">
+        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        <span>📦 Archived wallet · snapshot (from Firebase)</span>
+    </div>
+    <div id="walletContent" class="wallet-grid">
+        <!-- dynamic content from Firebase -->
+    </div>
+    <div class="wallet-timestamp" id="walletTimestamp"></div>
 </div>
 
 <!-- Table Container -->
@@ -379,7 +531,7 @@ opacity:0.5;
 
 <script>
 
-// Check authentication first
+// Check authentication
 if (sessionStorage.getItem('isAuthenticated') !== 'true') {
     window.location.href = 'login.html';
 }
@@ -418,11 +570,17 @@ function getPersonClass(person) {
     }
 }
 
+// totals variable to keep last computed (for send)
+let lastTotals = {
+    anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0
+};
+
+// Listen to payments and update table + main summary
 db.collection("payments")
 .orderBy("time","desc")
 .onSnapshot(function(snapshot){
 
-tableBody.innerHTML=""
+tableBody.innerHTML = "";
 
 // Initialize totals
 let totals = {
@@ -432,11 +590,10 @@ let totals = {
     houssam: 0,
     zaki: 0,
     mohamed: 0
-}
+};
 
 if (snapshot.empty) {
-    // Show empty state
-    let row = document.createElement("tr")
+    let row = document.createElement("tr");
     row.innerHTML = `
         <td colspan="6" style="padding: 0;">
             <div class="no-data">
@@ -444,68 +601,216 @@ if (snapshot.empty) {
                 No payment records found
             </div>
         </td>
-    `
-    tableBody.appendChild(row)
+    `;
+    tableBody.appendChild(row);
 } else {
     snapshot.forEach(function(doc){
+        let data = doc.data();
+        let row = document.createElement("tr");
+        
+        let price = parseFloat(data.price) || 0;
+        let half = price / 2;
+        
+        let mainClass = getPersonClass(data.name1);
+        let secondClass = getPersonClass(data.name2);
+        
+        // Totals logic (same as original)
+        if(data.name1?.toLowerCase() === "anas") totals.anas += half;
+        if(data.name1?.toLowerCase() === "oussama") totals.oussama += half;
+        if(data.name1?.toLowerCase() === "amine") totals.amine += half;
+        if(data.name2?.toLowerCase() === "houssam") totals.houssam += half;
+        if(data.name2?.toLowerCase() === "zaki") totals.zaki += half;
+        if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half;
+        if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half;
 
-    let data = doc.data()
-    let row = document.createElement("tr")
-    
-    // Calculate price and half
-    let price = parseFloat(data.price) || 0
-    let half = price / 2
-    
-    // Get person classes for badges
-    let mainClass = getPersonClass(data.name1)
-    let secondClass = getPersonClass(data.name2)
-    
-    // Add to totals based on names
-    if(data.name1?.toLowerCase() === "anas") totals.anas += half
-    if(data.name1?.toLowerCase() === "oussama") totals.oussama += half
-    if(data.name1?.toLowerCase() === "amine") totals.amine += half
-    if(data.name2?.toLowerCase() === "houssam") totals.houssam += half
-    if(data.name2?.toLowerCase() === "zaki") totals.zaki += half
-    if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half
-    if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half
+        row.innerHTML = `
+        <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
+        <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
+        <td><strong>${price.toFixed(2)} MAD</strong></td>
+        <td>${data.description || '-'}</td>
+        <td>${data.time ? new Date(data.time.seconds*1000).toLocaleString() : 'N/A'}</td>
+        <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')" title="Delete this record">🗑️</button></td>
+        `;
 
-    row.innerHTML = `
-    <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
-    <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
-    <td><strong>${price.toFixed(2)} MAD</strong></td>
-    <td>${data.description || '-'}</td>
-    <td>${data.time ? new Date(data.time.seconds*1000).toLocaleString() : 'N/A'}</td>
-    <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')" title="Delete this record">🗑️</button></td>
-    `
-
-    tableBody.appendChild(row)
-    })
+        tableBody.appendChild(row);
+    });
 }
 
-// Update totals in UI
-document.getElementById("anasTotal").innerText = totals.anas.toFixed(2)
-document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2)
-document.getElementById("amineTotal").innerText = totals.amine.toFixed(2)
-document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2)
-document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2)
-document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2)
+// keep a copy for send wallet
+lastTotals = {...totals};
 
-})
+// Update main summary
+document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
+document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
+document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
+document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2);
+document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2);
+document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2);
+
+}); // end snapshot
 
 function deleteDoc(id){
-if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
-    db.collection("payments").doc(id).delete()
-        .then(() => {
-            console.log("Document successfully deleted!");
-        })
-        .catch((error) => {
-            console.error("Error removing document: ", error);
-            alert("Error deleting record. Please try again.");
-        });
-}
+    if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
+        db.collection("payments").doc(id).delete()
+            .then(() => console.log("deleted"))
+            .catch(err => { alert("Error: "+ err); });
+    }
 }
 
+// ---------- WALLET LOGIC WITH FIREBASE (ACTUAL MEMORY) ----------
+const sendBtn = document.getElementById('sendWalletBtn');
+const viewBtn = document.getElementById('viewWalletBtn');
+const walletArea = document.getElementById('walletSnapshotArea');
+const walletContent = document.getElementById('walletContent');
+const walletTimestamp = document.getElementById('walletTimestamp');
+
+// Function to render wallet snapshot in UI
+function renderWalletSnapshot(archive) {
+    // archive = { totals: {anas, oussama, amine, houssam, zaki, mohamed}, timestamp: '...', formattedDate: '...' }
+    const t = archive.totals || {};
+    const personMap = [
+        { label: 'Anas', key: 'anas', class:'person-anas' },
+        { label: 'Oussama', key: 'oussama', class:'person-ous' },
+        { label: 'Amine', key: 'amine', class:'person-amine' },
+        { label: 'Houssam', key: 'houssam', class:'person-houssam' },
+        { label: 'Zaki', key: 'zaki', class:'person-zaki' },
+        { label: 'Mohamed', key: 'mohamed', class:'person-mohamed' }
+    ];
+    let htmlStr = '';
+    personMap.forEach(p => {
+        let amount = (t[p.key] || 0).toFixed(2);
+        htmlStr += `
+            <div class="wallet-item" style="border-left: 5px solid var(--${p.key}-color, #aaa); background: #f3f6fd;">
+                <span class="wallet-person person-badge ${p.class}">${p.label}</span>
+                <span class="wallet-amount">${amount}</span>
+                <span class="wallet-currency">MAD</span>
+            </div>
+        `;
+    });
+    walletContent.innerHTML = htmlStr;
+    walletTimestamp.innerText = `📅 ${archive.formattedDate || archive.timestamp || 'Unknown date'}`;
+    walletArea.style.display = 'block';
+}
+
+// Load the latest wallet snapshot from Firebase when page loads
+async function loadLatestWalletSnapshot() {
+    try {
+        const snapshot = await db.collection("wallet_snapshots")
+            .orderBy("timestamp", "desc")
+            .limit(1)
+            .get();
+        
+        if (!snapshot.empty) {
+            const data = snapshot.docs[0].data();
+            // Convert Firestore timestamp to readable date
+            let formattedDate = 'Unknown date';
+            if (data.timestamp) {
+                const date = data.timestamp.toDate ? data.timestamp.toDate() : new Date(data.timestamp);
+                formattedDate = date.toLocaleString();
+            }
+            
+            const archive = {
+                totals: data.totals || {},
+                timestamp: data.timestamp,
+                formattedDate: formattedDate
+            };
+            
+            renderWalletSnapshot(archive);
+        }
+    } catch (error) {
+        console.error("Error loading wallet snapshot: ", error);
+    }
+}
+
+// Call on page load
+loadLatestWalletSnapshot();
+
+// Send wallet: save to Firebase, then clear main totals
+sendBtn.addEventListener('click', async function() {
+    // get lastTotals (already updated by snapshot)
+    const totalsCopy = {...lastTotals};
+    
+    // create archive object with timestamp
+    const now = new Date();
+    
+    // Prepare data for Firebase
+    const walletData = {
+        totals: totalsCopy,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(), // Server timestamp
+        createdAt: now.toISOString(), // Backup string date
+        formattedDate: now.toLocaleString()
+    };
+    
+    try {
+        // Show loading state on button
+        sendBtn.innerHTML = `<span>⏳</span> Sending...`;
+        sendBtn.disabled = true;
+        
+        // Save to Firebase 'wallet_snapshots' collection
+        await db.collection("wallet_snapshots").add(walletData);
+        
+        // Load the latest snapshot (which will be the one we just added)
+        await loadLatestWalletSnapshot();
+        
+        // clear main summary boxes (hide totals - set to 0.00 visually)
+        document.getElementById("anasTotal").innerText = '0.00';
+        document.getElementById("oussamaTotal").innerText = '0.00';
+        document.getElementById("amineTotal").innerText = '0.00';
+        document.getElementById("houssamTotal").innerText = '0.00';
+        document.getElementById("zakiTotal").innerText = '0.00';
+        document.getElementById("mohamedTotal").innerText = '0.00';
+        
+        // Show success feedback
+        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet ✓`;
+        setTimeout(() => {
+            sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet`;
+            sendBtn.disabled = false;
+        }, 1500);
+        
+    } catch (error) {
+        console.error("Error saving wallet snapshot: ", error);
+        alert("Failed to save wallet snapshot. Check console.");
+        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/></svg> Send Wallet`;
+        sendBtn.disabled = false;
+    }
+});
+
+// View wallet: load the latest snapshot from Firebase
+viewBtn.addEventListener('click', async function() {
+    try {
+        viewBtn.innerHTML = `<span>⏳</span> Loading...`;
+        viewBtn.disabled = true;
+        
+        await loadLatestWalletSnapshot();
+        
+        // scroll to it smoothly
+        walletArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        
+        setTimeout(() => {
+            viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> View wallet`;
+            viewBtn.disabled = false;
+        }, 800);
+    } catch (error) {
+        console.error("Error loading snapshot: ", error);
+        alert("Could not load wallet snapshot.");
+        viewBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> View wallet`;
+        viewBtn.disabled = false;
+    }
+});
+
 </script>
+
+<!-- subtle style variable for wallet item consistency -->
+<style>
+    .wallet-item { box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .person-anas + .wallet-amount { color: #c62828; }
+    .person-ous + .wallet-amount { color: #1565c0; }
+    .person-amine + .wallet-amount { color: #9e6b0c; }
+    .person-houssam + .wallet-amount { color: #bf5e00; }
+    .person-zaki + .wallet-amount { color: #2e7d32; }
+    .person-mohamed + .wallet-amount { color: #6a1b9a; }
+    .wallet-item .person-badge { margin-bottom: 5px; }
+</style>
 
 </body>
 </html>
