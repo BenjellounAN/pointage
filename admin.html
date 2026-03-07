@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Admin Panel · Wallet System</title>
+<title>Admin Panel · Cumulative Wallet System</title>
 
 <style>
 * {
@@ -274,7 +274,7 @@ background:#e3f2fd;
     transform: scale(0.9);
 }
 
-/* ========== WALLET MODAL - FIXED HORIZONTAL DISPLAY ========== */
+/* ========== WALLET MODAL - HORIZONTAL MEMBERS WITH VERTICAL ENTRIES ========== */
 .wallet-modal {
     display: none;
     position: fixed;
@@ -295,7 +295,7 @@ background:#e3f2fd;
 }
 
 .modal-content {
-    max-width: 1300px;
+    max-width: 1400px;
     margin: 20px auto;
     position: relative;
     background: rgba(255,255,255,0.1);
@@ -344,72 +344,42 @@ background:#e3f2fd;
     padding-bottom: 10px;
 }
 
-/* HORIZONTAL CARDS CONTAINER */
-.horizontal-cards-container {
+/* HORIZONTAL MEMBERS CONTAINER */
+.members-horizontal-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
     margin: 20px 0;
 }
 
-/* SMALL HORIZONTAL CARD - كل بطاقة أفقية صغيرة */
-.small-wallet-card {
+/* MEMBER CARD - كل عضو في بطاقة أفقية */
+.member-card {
     background: white;
-    border-radius: 20px;
-    padding: 15px 18px;
-    min-width: 160px;
-    max-width: 180px;
+    border-radius: 24px;
+    width: 220px;
+    min-width: 200px;
     flex: 1 1 auto;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-    transition: all 0.3s;
-    border: 1px solid rgba(255,255,255,0.3);
+    max-width: 250px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    transition: transform 0.3s;
 }
 
-.small-wallet-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+.member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
 }
 
-/* Card Header - اسم العضو */
-.card-header {
-    font-size: 1.2rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 30px;
-    display: inline-block;
+/* Member Header */
+.member-header {
+    padding: 15px;
+    text-align: center;
     color: white;
-    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 1.3rem;
 }
 
-/* Card Amount - المبلغ */
-.card-amount {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #2d3748;
-    line-height: 1.2;
-    margin: 5px 0;
-}
-
-/* Card Date - التاريخ */
-.card-date {
-    font-size: 0.8rem;
-    color: #718096;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px dashed #e2e8f0;
-}
-
-.card-date svg {
-    width: 14px;
-    height: 14px;
-    fill: #718096;
-}
-
-/* Member Colors */
 .header-anas { background: linear-gradient(135deg, #c62828, #b71c1c); }
 .header-oussama { background: linear-gradient(135deg, #1565c0, #0d47a1); }
 .header-amine { background: linear-gradient(135deg, #9e6b0c, #7f5a0a); }
@@ -417,7 +387,92 @@ background:#e3f2fd;
 .header-zaki { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
 .header-mohamed { background: linear-gradient(135deg, #6a1b9a, #4a0072); }
 
-/* Empty state */
+/* Entries Container - التحويلات تحت بعض */
+.entries-container {
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f8fafd;
+}
+
+/* Individual Entry - كل تحويلة */
+.wallet-entry {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    border: 1px solid #edf2f7;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.wallet-entry:hover {
+    background: #f0f4fa;
+    transform: translateX(3px);
+}
+
+.entry-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.entry-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.entry-date {
+    font-size: 0.7rem;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.entry-date svg {
+    width: 12px;
+    height: 12px;
+    fill: #718096;
+}
+
+/* Delete button for each entry */
+.entry-delete {
+    background: #ff5252;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.entry-delete:hover {
+    background: #d32f2f;
+    transform: scale(1.1);
+}
+
+/* No entries */
+.no-entries {
+    text-align: center;
+    padding: 20px;
+    color: #a0aec0;
+    font-style: italic;
+    background: #f7fafc;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+/* No data state */
 .no-data-modal {
     text-align: center;
     padding: 60px;
@@ -433,7 +488,6 @@ background:#e3f2fd;
     display: block;
 }
 
-/* No data state for table */
 .no-data{
 text-align:center;
 padding:60px 20px;
@@ -452,29 +506,15 @@ opacity:0.5;
 
 /* Responsive */
 @media (max-width: 768px) {
-    .header-actions {
-        border-radius: 30px;
-        padding: 15px;
-    }
-    
-    .summary {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-    }
-    
-    .small-wallet-card {
-        min-width: 140px;
-        padding: 12px;
-    }
-    
-    .card-amount {
-        font-size: 1.4rem;
+    .member-card {
+        width: 100%;
+        max-width: 100%;
     }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -530,7 +570,7 @@ opacity:0.5;
     </div>
 </div>
 
-<h1>💰 Admin Panel · Wallet Transfer System</h1>
+<h1>💰 Admin Panel · Cumulative Wallet System</h1>
 
 <!-- Current Totals Section -->
 <div class="summary" id="summaryContainer">
@@ -571,18 +611,18 @@ opacity:0.5;
     </table>
 </div>
 
-<!-- WALLET MODAL - Hidden by default, shows horizontal cards -->
+<!-- WALLET MODAL - Horizontal Members with Vertical Entries -->
 <div class="wallet-modal" id="walletModal">
     <div class="modal-content">
         <button class="close-modal-btn" id="closeModalBtn">&times;</button>
         
         <div class="modal-header">
-            <h2>📦 Latest Wallet Transfer</h2>
+            <h2>📦 Wallet Transfer History</h2>
         </div>
         
-        <!-- Horizontal Cards Container -->
-        <div class="horizontal-cards-container" id="walletCardsContainer">
-            <!-- Cards will be inserted here dynamically -->
+        <!-- Horizontal Members Container -->
+        <div class="members-horizontal-container" id="membersContainer">
+            <!-- Will be populated dynamically -->
         </div>
     </div>
 </div>
@@ -687,10 +727,7 @@ db.collection("payments")
 function deleteDoc(id) {
     if (confirm('Are you sure you want to delete this record? This action cannot be undone.')) {
         db.collection("payments").doc(id).delete()
-            .then(() => {
-                console.log("Document deleted");
-                // No need to update totals here - onSnapshot will handle it
-            })
+            .then(() => console.log("Document deleted"))
             .catch(err => alert("Error: " + err));
     }
 }
@@ -698,7 +735,7 @@ function deleteDoc(id) {
 // ========== WALLET MODAL FUNCTIONS ==========
 const walletModal = document.getElementById('walletModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
-const walletCardsContainer = document.getElementById('walletCardsContainer');
+const membersContainer = document.getElementById('membersContainer');
 
 // Close modal
 closeModalBtn.addEventListener('click', function() {
@@ -713,7 +750,7 @@ document.addEventListener('keydown', function(event) {
 });
 
 // Format date function
-function formatWalletDate(timestamp) {
+function formatEntryDate(timestamp) {
     if (!timestamp) return 'No date';
     
     let date;
@@ -734,17 +771,31 @@ function formatWalletDate(timestamp) {
     }).replace(',', '');
 }
 
-// Load and display the LATEST wallet snapshot only
-async function loadLatestWalletSnapshot() {
+// Delete individual wallet entry
+async function deleteWalletEntry(entryId, memberKey) {
+    if (!confirm('Delete this transfer entry?')) return;
+    
     try {
-        // Get ONLY the most recent snapshot
-        const snapshot = await db.collection("wallet_snapshots")
+        await db.collection("wallet_entries").doc(entryId).delete();
+        console.log('Entry deleted');
+        // Refresh the display
+        loadAllWalletEntries();
+    } catch (error) {
+        console.error("Error deleting entry: ", error);
+        alert("Failed to delete entry");
+    }
+}
+
+// Load ALL wallet entries (cumulative history)
+async function loadAllWalletEntries() {
+    try {
+        // Get all entries ordered by timestamp (newest first)
+        const snapshot = await db.collection("wallet_entries")
             .orderBy("timestamp", "desc")
-            .limit(1)
             .get();
         
         if (snapshot.empty) {
-            walletCardsContainer.innerHTML = `
+            membersContainer.innerHTML = `
                 <div class="no-data-modal">
                     <span class="no-data-icon">📭</span>
                     No wallet transfers yet<br>
@@ -754,60 +805,80 @@ async function loadLatestWalletSnapshot() {
             return;
         }
         
-        // Get the latest snapshot data
-        const data = snapshot.docs[0].data();
-        const totals = data.totals || {};
-        const timestamp = data.timestamp;
-        const formattedDate = formatWalletDate(timestamp);
+        // Group entries by member
+        const membersData = {
+            anas: { label: 'Anas', headerClass: 'header-anas', entries: [] },
+            oussama: { label: 'Oussama', headerClass: 'header-oussama', entries: [] },
+            amine: { label: 'Amine', headerClass: 'header-amine', entries: [] },
+            houssam: { label: 'Houssam', headerClass: 'header-houssam', entries: [] },
+            zaki: { label: 'Zaki', headerClass: 'header-zaki', entries: [] },
+            mohamed: { label: 'Mohamed', headerClass: 'header-mohamed', entries: [] }
+        };
         
-        // Define members
-        const members = [
-            { key: 'anas', label: 'Anas', headerClass: 'header-anas' },
-            { key: 'oussama', label: 'Oussama', headerClass: 'header-oussama' },
-            { key: 'amine', label: 'Amine', headerClass: 'header-amine' },
-            { key: 'houssam', label: 'Houssam', headerClass: 'header-houssam' },
-            { key: 'zaki', label: 'Zaki', headerClass: 'header-zaki' },
-            { key: 'mohamed', label: 'Mohamed', headerClass: 'header-mohamed' }
-        ];
-        
-        // Build horizontal cards
-        let cardsHTML = '';
-        let hasAnyAmount = false;
-        
-        members.forEach(member => {
-            const amount = totals[member.key] || 0;
-            if (amount > 0) {
-                hasAnyAmount = true;
-                cardsHTML += `
-                    <div class="small-wallet-card">
-                        <div class="card-header ${member.headerClass}">${member.label}</div>
-                        <div class="card-amount">${amount.toFixed(2)} MAD</div>
-                        <div class="card-date">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.1.8-1.2-4.5-2.7V7z"/>
-                            </svg>
-                            ${formattedDate}
-                        </div>
-                    </div>
-                `;
+        // Process each entry
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const member = data.member; // anas, oussama, etc.
+            const amount = data.amount || 0;
+            const timestamp = data.timestamp;
+            const formattedDate = formatEntryDate(timestamp);
+            
+            if (membersData[member] && amount > 0) {
+                membersData[member].entries.push({
+                    id: doc.id,
+                    amount: amount.toFixed(2),
+                    date: formattedDate,
+                    rawTimestamp: timestamp
+                });
             }
         });
         
-        // If no amounts at all (all zero), show message
-        if (!hasAnyAmount) {
-            cardsHTML = `
-                <div class="no-data-modal">
-                    <span class="no-data-icon">📭</span>
-                    All amounts are zero in the latest transfer
+        // Build the HTML
+        let htmlStr = '';
+        
+        Object.keys(membersData).forEach(memberKey => {
+            const member = membersData[memberKey];
+            const entries = member.entries;
+            
+            let entriesHTML = '';
+            if (entries.length === 0) {
+                entriesHTML = `<div class="no-entries">No transfers yet</div>`;
+            } else {
+                entries.forEach(entry => {
+                    entriesHTML += `
+                        <div class="wallet-entry">
+                            <div class="entry-main">
+                                <span class="entry-amount">${entry.amount} MAD</span>
+                                <button class="entry-delete" onclick="deleteWalletEntry('${entry.id}', '${memberKey}')" title="Delete this transfer">🗑️</button>
+                            </div>
+                            <div class="entry-date">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.1.8-1.2-4.5-2.7V7z"/>
+                                </svg>
+                                ${entry.date}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            htmlStr += `
+                <div class="member-card">
+                    <div class="member-header ${member.headerClass}">
+                        ${member.label}
+                    </div>
+                    <div class="entries-container">
+                        ${entriesHTML}
+                    </div>
                 </div>
             `;
-        }
+        });
         
-        walletCardsContainer.innerHTML = cardsHTML;
+        membersContainer.innerHTML = htmlStr;
         
     } catch (error) {
-        console.error("Error loading wallet snapshot: ", error);
-        walletCardsContainer.innerHTML = `
+        console.error("Error loading wallet entries: ", error);
+        membersContainer.innerHTML = `
             <div class="no-data-modal">
                 <span class="no-data-icon">❌</span>
                 Error loading wallet data<br>
@@ -817,45 +888,66 @@ async function loadLatestWalletSnapshot() {
     }
 }
 
-// ========== SEND WALLET - CORRECTED VERSION ==========
+// ========== SEND WALLET - Add new entry for each member ==========
 const sendBtn = document.getElementById('sendWalletBtn');
 const viewBtn = document.getElementById('viewWalletBtn');
 
 sendBtn.addEventListener('click', async function() {
-    // Save current totals to Firebase
-    const totalsToSave = { ...currentTotals };
-    
-    // Don't save if all totals are zero (optional)
-    const hasNonZero = Object.values(totalsToSave).some(val => val > 0);
+    // Check if there are any non-zero totals
+    const hasNonZero = Object.values(currentTotals).some(val => val > 0);
     if (!hasNonZero) {
         alert('No amounts to send. All totals are zero.');
         return;
     }
     
-    const walletData = {
-        totals: totalsToSave,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        createdAt: new Date().toISOString()
-    };
-    
     try {
         sendBtn.innerHTML = `<span>⏳</span> Sending...`;
         sendBtn.disabled = true;
         
-        // Save to Firebase
-        await db.collection("wallet_snapshots").add(walletData);
+        // Create a batch write
+        const batch = db.batch();
+        
+        // For each member with non-zero amount, create a separate entry
+        const members = ['anas', 'oussama', 'amine', 'houssam', 'zaki', 'mohamed'];
+        const now = new Date();
+        let entriesAdded = 0;
+        
+        members.forEach(memberKey => {
+            const amount = currentTotals[memberKey];
+            if (amount > 0) {
+                entriesAdded++;
+                const entryRef = db.collection("wallet_entries").doc(); // auto ID
+                batch.set(entryRef, {
+                    member: memberKey,
+                    amount: amount,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: now.toISOString()
+                });
+            }
+        });
+        
+        if (entriesAdded === 0) {
+            alert('No amounts to send.');
+            sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Send Wallet`;
+            sendBtn.disabled = false;
+            return;
+        }
+        
+        // Commit the batch
+        await batch.commit();
+        
+        // IMPORTANT: Delete ALL payment records to clear current totals
+        const paymentsSnapshot = await db.collection("payments").get();
+        if (!paymentsSnapshot.empty) {
+            const deleteBatch = db.batch();
+            paymentsSnapshot.docs.forEach(doc => {
+                deleteBatch.delete(doc.ref);
+            });
+            await deleteBatch.commit();
+        }
         
         // Show success
         sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Sent ✓`;
-        
-        // IMPORTANT: Delete all payment records to clear totals
-        // This is the key step to make totals go to zero
-        const paymentsSnapshot = await db.collection("payments").get();
-        const batch = db.batch();
-        paymentsSnapshot.docs.forEach(doc => {
-            batch.delete(doc.ref);
-        });
-        await batch.commit();
         
         // Reset button after 2 seconds
         setTimeout(() => {
@@ -864,20 +956,20 @@ sendBtn.addEventListener('click', async function() {
         }, 2000);
         
     } catch (error) {
-        console.error("Error saving wallet snapshot: ", error);
+        console.error("Error saving wallet entries: ", error);
         alert("Failed to save wallet. Check connection.");
         sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Send Wallet`;
         sendBtn.disabled = false;
     }
 });
 
-// View wallet - Open modal and load LATEST snapshot only
+// View wallet - Open modal and load ALL entries
 viewBtn.addEventListener('click', async function() {
     try {
         viewBtn.innerHTML = `<span>⏳</span> Loading...`;
         viewBtn.disabled = true;
         
-        await loadLatestWalletSnapshot();
+        await loadAllWalletEntries();
         walletModal.style.display = 'block';
         
         setTimeout(() => {
