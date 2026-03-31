@@ -77,8 +77,12 @@ display:block;
 
 <button id="zaki" style="background:green;">Zaki</button>
 
-<!-- New purple button for mohamed -->
 <button id="mohamed" style="background:purple;">Mohamed</button>
+
+<!-- العناصر الجديدة User 3, User 4, User 5 -->
+<button id="user3" style="background:orange;">User 3</button>
+<button id="user4" style="background:pink;color:black;">User 4</button>
+<button id="user5" style="background:teal;">User 5</button>
 
 <br>
 
@@ -131,7 +135,6 @@ let secondName=""
 
 /* admin */
 document.getElementById("adminBtn").onclick=function(){
-// التحقق مما إذا كان المستخدم مسجل الدخول قبل الذهاب إلى admin
 const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' || 
                sessionStorage.getItem('delivery_auth') === 'true' ||
                localStorage.getItem('delivery_auth') === 'true';
@@ -139,7 +142,7 @@ const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' ||
 if (isAuth) {
     window.location.href = "admin.html";
 } else {
-    window.location.href = "login.html"; // أو index.html إذا كانت صفحة تسجيل الدخول هي نفسها
+    window.location.href = "login.html";
 }
 }
 
@@ -172,9 +175,24 @@ secondName="zaki"
 goStep3()
 }
 
-// Handler for mohamed button
 document.getElementById("mohamed").onclick=function(){
 secondName="mohamed"
+goStep3()
+}
+
+/* معالجات العناصر الجديدة User 3, User 4, User 5 */
+document.getElementById("user3").onclick=function(){
+secondName="user3"
+goStep3()
+}
+
+document.getElementById("user4").onclick=function(){
+secondName="user4"
+goStep3()
+}
+
+document.getElementById("user5").onclick=function(){
+secondName="user5"
 goStep3()
 }
 
