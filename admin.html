@@ -177,19 +177,22 @@ margin-top: 8px;
 color: #1e2b3a;
 }
 
-.box[data-person="anas"] { border-bottom: 4px solid #c62828; background: linear-gradient(to bottom, #ffffff, #ffebee); }
-.box[data-person="oussama"] { border-bottom: 4px solid #1565c0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); }
-.box[data-person="amine"] { border-bottom: 4px solid #9e6b0c; background: linear-gradient(to bottom, #ffffff, #fffde7); }
-.box[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
-.box[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
-.box[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
-
 .box small {
     color: #666;
     font-size: 0.75em;
     display: block;
     margin-top: 5px;
 }
+
+.box[data-person="anas"] { border-bottom: 4px solid #c62828; background: linear-gradient(to bottom, #ffffff, #ffebee); }
+.box[data-person="oussama"] { border-bottom: 4px solid #1565c0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); }
+.box[data-person="amine"] { border-bottom: 4px solid #9e6b0c; background: linear-gradient(to bottom, #ffffff, #fffde7); }
+.box[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
+.box[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
+.box[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
+.box[data-person="user3"] { border-bottom: 4px solid #06b6d4; background: linear-gradient(to bottom, #ffffff, #e0f2fe); }
+.box[data-person="user4"] { border-bottom: 4px solid #f97316; background: linear-gradient(to bottom, #ffffff, #ffede0); }
+.box[data-person="user5"] { border-bottom: 4px solid #ec489a; background: linear-gradient(to bottom, #ffffff, #fce7f3); }
 
 /* Table Container */
 .table-container{
@@ -248,6 +251,9 @@ background:#e3f2fd;
 .person-houssam { background: #fff3e0; color: #bf5e00; border-left: 4px solid #bf5e00; }
 .person-zaki { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
 .person-mohamed { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #6a1b9a; }
+.person-user3 { background: #e0f2fe; color: #06b6d4; border-left: 4px solid #06b6d4; }
+.person-user4 { background: #ffede0; color: #f97316; border-left: 4px solid #f97316; }
+.person-user5 { background: #fce7f3; color: #ec489a; border-left: 4px solid #ec489a; }
 
 .deleteBtn {
     background: #ff5252;
@@ -462,6 +468,9 @@ background:#e3f2fd;
 .header-houssam { background: linear-gradient(135deg, #bf5e00, #9e4d00); }
 .header-zaki { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
 .header-mohamed { background: linear-gradient(135deg, #6a1b9a, #4a0072); }
+.header-user3 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.header-user4 { background: linear-gradient(135deg, #f97316, #ea580c); }
+.header-user5 { background: linear-gradient(135deg, #ec489a, #db2777); }
 
 /* Entries Container - التحويلات تحت بعض */
 .entries-container {
@@ -668,6 +677,15 @@ opacity:0.5;
     <div class="box" data-person="mohamed">
         Mohamed <span id="mohamedTotal">0.00</span> <small>MAD</small>
     </div>
+    <div class="box" data-person="user3">
+        User 3 <span id="user3Total">0.00</span> <small>MAD</small>
+    </div>
+    <div class="box" data-person="user4">
+        User 4 <span id="user4Total">0.00</span> <small>MAD</small>
+    </div>
+    <div class="box" data-person="user5">
+        User 5 <span id="user5Total">0.00</span> <small>MAD</small>
+    </div>
 </div>
 
 <!-- Table Container -->
@@ -804,19 +822,22 @@ function getPersonClass(person) {
         case "houssam": return "person-houssam"
         case "zaki": return "person-zaki"
         case "mohamed": return "person-mohamed"
+        case "user3": return "person-user3"
+        case "user4": return "person-user4"
+        case "user5": return "person-user5"
         default: return ""
     }
 }
 
 // Current totals (updated in real-time)
-let currentTotals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
+let currentTotals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0, user3: 0, user4: 0, user5: 0 };
 
 // Listen to payments and update table + main totals
 db.collection("payments")
 .orderBy("time", "desc")
 .onSnapshot(function(snapshot){
     tableBody.innerHTML = "";
-    let totals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0 };
+    let totals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0, user3: 0, user4: 0, user5: 0 };
 
     if (snapshot.empty) {
         let row = document.createElement("tr");
@@ -839,14 +860,17 @@ db.collection("payments")
             if(data.name2?.toLowerCase() === "zaki") totals.zaki += half;
             if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half;
             if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half;
+            if(data.name2?.toLowerCase() === "user3") totals.user3 += half;
+            if(data.name2?.toLowerCase() === "user4") totals.user4 += half;
+            if(data.name2?.toLowerCase() === "user5") totals.user5 += half;
 
             row.innerHTML = `
-            <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
-            <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
-            <td><strong>${price.toFixed(2)}</strong></td>
-            <td>${data.description || '-'}</td>
-            <td>${data.time ? new Date(data.time.seconds * 1000).toLocaleString() : 'N/A'}</td>
-            <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')">🗑️</button></td>
+                <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
+                <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
+                <td><strong>${price.toFixed(2)}</strong></td>
+                <td>${data.description || '-'}</td>
+                <td>${data.time ? new Date(data.time.seconds * 1000).toLocaleString() : 'N/A'}</td>
+                <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')">🗑️</button></td>
             `;
             tableBody.appendChild(row);
         });
@@ -862,6 +886,9 @@ db.collection("payments")
     document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2);
     document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2);
     document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2);
+    document.getElementById("user3Total").innerText = totals.user3.toFixed(2);
+    document.getElementById("user4Total").innerText = totals.user4.toFixed(2);
+    document.getElementById("user5Total").innerText = totals.user5.toFixed(2);
 });
 
 function deleteDoc(id) {
@@ -956,7 +983,10 @@ async function loadAllWalletEntries() {
             amine: { label: 'Amine', headerClass: 'header-amine', entries: [], total: 0 },
             houssam: { label: 'Houssam', headerClass: 'header-houssam', entries: [], total: 0 },
             zaki: { label: 'Zaki', headerClass: 'header-zaki', entries: [], total: 0 },
-            mohamed: { label: 'Mohamed', headerClass: 'header-mohamed', entries: [], total: 0 }
+            mohamed: { label: 'Mohamed', headerClass: 'header-mohamed', entries: [], total: 0 },
+            user3: { label: 'User 3', headerClass: 'header-user3', entries: [], total: 0 },
+            user4: { label: 'User 4', headerClass: 'header-user4', entries: [], total: 0 },
+            user5: { label: 'User 5', headerClass: 'header-user5', entries: [], total: 0 }
         };
         
         // Process each entry
@@ -1058,7 +1088,7 @@ sendBtn.addEventListener('click', async function() {
         const batch = db.batch();
         
         // For each member with non-zero amount, create a separate entry
-        const members = ['anas', 'oussama', 'amine', 'houssam', 'zaki', 'mohamed'];
+        const members = ['anas', 'oussama', 'amine', 'houssam', 'zaki', 'mohamed', 'user3', 'user4', 'user5'];
         const now = new Date();
         let entriesAdded = 0;
         
