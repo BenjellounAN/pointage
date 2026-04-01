@@ -130,6 +130,8 @@ body {
     margin-top: 8px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 /* Filters */
@@ -261,6 +263,12 @@ body {
     background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,0.3);
     color: white;
+}
+
+.person-user {
+    background: rgba(156, 39, 176, 0.2);
+    border: 1px solid #9c27b0;
+    color: #e1bee7;
 }
 
 /* Arrow between persons */
@@ -561,6 +569,7 @@ body {
             <div class="stat-detail">
                 <span>Mng: <span id="managersTotal">0</span></span>
                 <span>Wrk: <span id="workersTotal">0</span></span>
+                <span>Usr: <span id="usersTotal">0</span></span>
             </div>
         </div>
         <div class="stat-card">
@@ -579,6 +588,15 @@ body {
                 <span>H: <span id="houssamTotal">0</span></span>
                 <span>Z: <span id="zakiTotal">0</span></span>
                 <span>M: <span id="mohamedTotal">0</span></span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">🆕 Users</div>
+            <div class="stat-value" id="usersCount">0</div>
+            <div class="stat-detail" id="usersDetail">
+                <span>U3: <span id="user3Total">0</span></span>
+                <span>U4: <span id="user4Total">0</span></span>
+                <span>U5: <span id="user5Total">0</span></span>
             </div>
         </div>
     </div>
@@ -606,6 +624,11 @@ body {
                 <option value="houssam">Houssam</option>
                 <option value="zaki">Zaki</option>
                 <option value="mohamed">Mohamed</option>
+            </optgroup>
+            <optgroup label="Users">
+                <option value="user3">User 3</option>
+                <option value="user4">User 4</option>
+                <option value="user5">User 5</option>
             </optgroup>
         </select>
         
@@ -663,13 +686,11 @@ body {
     console.log('Checking authentication...');
     
     function checkAuth() {
-        // التحقق من وجود جلسة صالحة
         const isAuth = sessionStorage.getItem('delivery_auth') === 'true';
         const authTime = sessionStorage.getItem('delivery_auth_time');
         const now = Date.now();
         const eightHours = 8 * 60 * 60 * 1000;
         
-        // التحقق من localStorage كنسخة احتياطية
         const localAuth = localStorage.getItem('delivery_auth') === 'true';
         const localTime = localStorage.getItem('delivery_auth_time');
         
@@ -677,24 +698,18 @@ body {
             console.log('Session authentication valid');
             return true;
         } else if (localAuth && localTime && (now - parseInt(localTime)) < eightHours) {
-            // استعادة الجلسة من localStorage
             console.log('Restoring session from localStorage');
             sessionStorage.setItem('delivery_auth', 'true');
             sessionStorage.setItem('delivery_auth_time', localTime);
             return true;
         } else {
             console.log('No valid session, redirecting to login');
-            
-            // حفظ الصفحة المطلوبة لإعادة التوجيه بعد login
             sessionStorage.setItem('redirect_after_login', 'operations.html');
-            
-            // إعادة التوجيه إلى صفحة login
             window.location.replace('login.html');
             return false;
         }
     }
     
-    // تنفيذ التحقق
     if (!checkAuth()) {
         throw new Error('Authentication required');
     }
@@ -702,7 +717,6 @@ body {
 
 // ========== دوال التنقل ==========
 function goToAdmin() {
-    // التحقق من الجلسة قبل الانتقال
     if (sessionStorage.getItem('delivery_auth') === 'true' || localStorage.getItem('delivery_auth') === 'true') {
         window.location.href = 'admin.html';
     } else {
@@ -712,13 +726,10 @@ function goToAdmin() {
 }
 
 function logout() {
-    // تنظيف جميع بيانات الجلسة
     sessionStorage.removeItem('delivery_auth');
     sessionStorage.removeItem('delivery_auth_time');
     localStorage.removeItem('delivery_auth');
     localStorage.removeItem('delivery_auth_time');
-    
-    // إعادة التوجيه إلى login
     window.location.href = 'login.html';
 }
 
@@ -733,7 +744,6 @@ const firebaseConfig = {
     measurementId: "G-YMXBJFJ9N8"
 };
 
-// تهيئة Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -743,9 +753,10 @@ let filteredOps = [];
 let currentPage = 1;
 let itemsPerPage = 15;
 
-// الثوابت
+// الثوابت - تحديث لتشمل المستخدمين الجدد
 const managers = ['anas', 'oussama', 'amine'];
 const workers = ['houssam', 'zaki', 'mohamed'];
+const users = ['user3', 'user4', 'user5'];
 
 // كاش لبيانات الدفعات
 const paymentCache = new Map();
@@ -766,14 +777,19 @@ const totalPaymentsSpan = document.getElementById('totalPayments');
 const totalTransfersSpan = document.getElementById('totalTransfers');
 const managersTotalSpan = document.getElementById('managersTotal');
 const workersTotalSpan = document.getElementById('workersTotal');
+const usersTotalSpan = document.getElementById('usersTotal');
 const managersCountSpan = document.getElementById('managersCount');
 const workersCountSpan = document.getElementById('workersCount');
+const usersCountSpan = document.getElementById('usersCount');
 const anasTotalSpan = document.getElementById('anasTotal');
 const oussamaTotalSpan = document.getElementById('oussamaTotal');
 const amineTotalSpan = document.getElementById('amineTotal');
 const houssamTotalSpan = document.getElementById('houssamTotal');
 const zakiTotalSpan = document.getElementById('zakiTotal');
 const mohamedTotalSpan = document.getElementById('mohamedTotal');
+const user3TotalSpan = document.getElementById('user3Total');
+const user4TotalSpan = document.getElementById('user4Total');
+const user5TotalSpan = document.getElementById('user5Total');
 
 // ========== الدوال المساعدة ==========
 function formatDate(timestamp) {
@@ -793,7 +809,11 @@ function formatDate(timestamp) {
 
 function getPersonClass(person) {
     if (!person) return 'person-worker';
-    return managers.includes(person.toLowerCase()) ? 'person-manager' : 'person-worker';
+    const lowerPerson = person.toLowerCase();
+    if (managers.includes(lowerPerson)) return 'person-manager';
+    if (workers.includes(lowerPerson)) return 'person-worker';
+    if (users.includes(lowerPerson)) return 'person-user';
+    return 'person-worker';
 }
 
 function getTypeInfo(status) {
@@ -809,12 +829,10 @@ function getTypeInfo(status) {
 // ========== تحميل البيانات ==========
 async function loadData() {
     try {
-        // تحميل الدفعات
         const paymentsSnap = await db.collection("payments")
             .orderBy("time", "desc")
             .get();
         
-        // بناء الكاش
         paymentsSnap.forEach(doc => {
             const data = doc.data();
             paymentCache.set(doc.id, {
@@ -827,15 +845,12 @@ async function loadData() {
             });
         });
         
-        // تحميل التحويلات
         const walletSnap = await db.collection("wallet_entries")
             .orderBy("timestamp", "desc")
             .get();
         
-        // دمج العمليات
         allOperations = [];
         
-        // إضافة الدفعات
         paymentsSnap.forEach(doc => {
             const data = doc.data();
             allOperations.push({
@@ -852,17 +867,14 @@ async function loadData() {
             });
         });
         
-        // إضافة التحويلات
         walletSnap.forEach(doc => {
             const data = doc.data();
             
-            // البحث عن البيانات الأصلية
             let originalData = null;
             if (data.originalPaymentId && paymentCache.has(data.originalPaymentId)) {
                 originalData = paymentCache.get(data.originalPaymentId);
             }
             
-            // استخدام البيانات الأصلية
             const sender = originalData ? originalData.sender : (data.name1 || 'System');
             const receiver = originalData ? originalData.receiver : (data.name2 || data.member || 'Unknown');
             const description = originalData ? originalData.description : (data.description || 'Transfer');
@@ -882,14 +894,12 @@ async function loadData() {
             });
         });
         
-        // ترتيب العمليات
         allOperations.sort((a, b) => {
             const ta = a.timestamp?.seconds || 0;
             const tb = b.timestamp?.seconds || 0;
             return tb - ta;
         });
         
-        // تطبيق الفلاتر
         applyFilters();
         
     } catch (error) {
@@ -1002,7 +1012,8 @@ function applyFilters() {
 function updateStats() {
     const totals = {
         anas: 0, oussama: 0, amine: 0,
-        houssam: 0, zaki: 0, mohamed: 0
+        houssam: 0, zaki: 0, mohamed: 0,
+        user3: 0, user4: 0, user5: 0
     };
     
     filteredOps.forEach(op => {
@@ -1016,6 +1027,7 @@ function updateStats() {
     
     const managersTotal = totals.anas + totals.oussama + totals.amine;
     const workersTotal = totals.houssam + totals.zaki + totals.mohamed;
+    const usersTotal = totals.user3 + totals.user4 + totals.user5;
     
     totalOpsSpan.textContent = filteredOps.length;
     totalAmountSpan.textContent = filteredOps.reduce((s, o) => s + o.amount, 0).toFixed(2);
@@ -1024,6 +1036,7 @@ function updateStats() {
     
     managersTotalSpan.textContent = managersTotal.toFixed(2);
     workersTotalSpan.textContent = workersTotal.toFixed(2);
+    usersTotalSpan.textContent = usersTotal.toFixed(2);
     
     managersCountSpan.textContent = filteredOps.filter(o => 
         o.type === 'payment' && managers.includes(o.sender?.toLowerCase())
@@ -1033,12 +1046,19 @@ function updateStats() {
         o.type === 'payment' && workers.includes(o.sender?.toLowerCase())
     ).length;
     
+    usersCountSpan.textContent = filteredOps.filter(o => 
+        o.type === 'payment' && users.includes(o.sender?.toLowerCase())
+    ).length;
+    
     anasTotalSpan.textContent = totals.anas.toFixed(2);
     oussamaTotalSpan.textContent = totals.oussama.toFixed(2);
     amineTotalSpan.textContent = totals.amine.toFixed(2);
     houssamTotalSpan.textContent = totals.houssam.toFixed(2);
     zakiTotalSpan.textContent = totals.zaki.toFixed(2);
     mohamedTotalSpan.textContent = totals.mohamed.toFixed(2);
+    user3TotalSpan.textContent = totals.user3.toFixed(2);
+    user4TotalSpan.textContent = totals.user4.toFixed(2);
+    user5TotalSpan.textContent = totals.user5.toFixed(2);
 }
 
 // ========== عرض الجدول ==========
@@ -1055,8 +1075,8 @@ function renderTable() {
                         <div class="no-data-icon">📭</div>
                         No operations
                     </div>
-                </td>
-            </tr>
+                 </td>
+             </tr>
         `;
         paginationDiv.innerHTML = '';
         return;
