@@ -152,6 +152,45 @@ gap: 15px;
 margin: 25px 0 20px;
 }
 
+/* تباعد خاص بين Anas و Amine و Oussama وباقي العناصر */
+.summary {
+    gap: 15px;
+}
+
+/* إضافة مجموعة خاصة للعناصر الثلاثة الأولى */
+.summary .box[data-person="anas"],
+.summary .box[data-person="amine"],
+.summary .box[data-person="oussama"] {
+    margin-bottom: 0;
+}
+
+/* فاصل مرئي بعد العناصر الثلاثة */
+.summary::after {
+    display: none;
+}
+
+/* إضافة مسافة أكبر بين المجموعتين */
+@media (min-width: 768px) {
+    .summary {
+        gap: 20px;
+    }
+    /* مسافة إضافية بين Oussama والعنصر الذي يليه */
+    .summary .box[data-person="oussama"] {
+        margin-right: 30px;
+        position: relative;
+    }
+    .summary .box[data-person="oussama"]::after {
+        content: '';
+        position: absolute;
+        right: -18px;
+        top: 20%;
+        height: 60%;
+        width: 3px;
+        background: linear-gradient(to bottom, #ccc, transparent);
+        border-radius: 3px;
+    }
+}
+
 .box{
 background: white;
 padding: 15px 10px;
@@ -434,7 +473,7 @@ background:#e3f2fd;
     max-width: 250px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     overflow: hidden;
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .member-card:hover {
@@ -450,6 +489,7 @@ background:#e3f2fd;
     font-weight: 700;
     font-size: 1.3rem;
     position: relative;
+    transition: all 0.3s;
 }
 
 .member-total {
@@ -460,6 +500,7 @@ background:#e3f2fd;
     padding: 3px 8px;
     border-radius: 20px;
     display: inline-block;
+    transition: all 0.3s;
 }
 
 .header-anas { background: linear-gradient(135deg, #c62828, #b71c1c); }
@@ -662,11 +703,11 @@ opacity:0.5;
     <div class="box" data-person="anas">
         Anas <span id="anasTotal">0.00</span> <small>MAD</small>
     </div>
-    <div class="box" data-person="oussama">
-        Oussama <span id="oussamaTotal">0.00</span> <small>MAD</small>
-    </div>
     <div class="box" data-person="amine">
         Amine <span id="amineTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="box" data-person="oussama">
+        Oussama <span id="oussamaTotal">0.00</span> <small>MAD</small>
     </div>
     <div class="box" data-person="houssam">
         Houssam <span id="houssamTotal">0.00</span> <small>MAD</small>
@@ -720,7 +761,7 @@ opacity:0.5;
     </table>
 </div>
 
-<!-- WALLET MODAL - Horizontal Members with Vertical Entries -->
+<!-- WALLET MODAL - Horizontal Members with Vertical Entries مرتبة تنازلياً -->
 <div class="wallet-modal" id="walletModal">
     <div class="modal-content">
         <button class="close-modal-btn" id="closeModalBtn">&times;</button>
@@ -730,9 +771,9 @@ opacity:0.5;
             <div class="total-transfers-badge" id="totalTransfersBadge">Total: 0 transfers</div>
         </div>
         
-        <!-- Horizontal Members Container -->
+        <!-- Horizontal Members Container - سيتم ترتيبها تنازلياً -->
         <div class="members-horizontal-container" id="membersContainer">
-            <!-- Will be populated dynamically -->
+            <!-- Will be populated dynamically in descending order -->
         </div>
     </div>
 </div>
@@ -899,7 +940,7 @@ function deleteDoc(id) {
     }
 }
 
-// ========== WALLET MODAL FUNCTIONS ==========
+// ========== WALLET MODAL FUNCTIONS with DESCENDING ORDER ==========
 const walletModal = document.getElementById('walletModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const membersContainer = document.getElementById('membersContainer');
@@ -954,7 +995,7 @@ async function deleteWalletEntry(entryId, memberKey) {
     }
 }
 
-// Load ALL wallet entries (cumulative history)
+// Load ALL wallet entries (cumulative history) with DESCENDING order by total amount
 async function loadAllWalletEntries() {
     try {
         // Get all entries ordered by timestamp (newest first)
@@ -984,8 +1025,8 @@ async function loadAllWalletEntries() {
             houssam: { label: 'Houssam', headerClass: 'header-houssam', entries: [], total: 0 },
             zaki: { label: 'Zaki', headerClass: 'header-zaki', entries: [], total: 0 },
             mohamed: { label: 'Mohamed', headerClass: 'header-mohamed', entries: [], total: 0 },
-            user3: { label: 'User 3', headerClass: 'header-user3', entries: [], total: 0 },
-            user4: { label: 'User 4', headerClass: 'header-user4', entries: [], total: 0 },
+            user3: { label: 'Rida', headerClass: 'header-user3', entries: [], total: 0 },
+            user4: { label: 'Soufiane', headerClass: 'header-user4', entries: [], total: 0 },
             user5: { label: 'User 5', headerClass: 'header-user5', entries: [], total: 0 }
         };
         
@@ -1012,11 +1053,22 @@ async function loadAllWalletEntries() {
         // Update total badge
         totalTransfersBadge.innerText = `Total: ${totalEntries} transfers`;
         
-        // Build the HTML
+        // Convert membersData to array for sorting
+        const membersArray = Object.keys(membersData).map(key => ({
+            key: key,
+            label: membersData[key].label,
+            headerClass: membersData[key].headerClass,
+            entries: membersData[key].entries,
+            total: membersData[key].total
+        }));
+        
+        // Sort by total amount in DESCENDING order (from most to least)
+        membersArray.sort((a, b) => b.total - a.total);
+        
+        // Build the HTML with animated fade-in effect
         let htmlStr = '';
         
-        Object.keys(membersData).forEach(memberKey => {
-            const member = membersData[memberKey];
+        membersArray.forEach((member, index) => {
             const entries = member.entries;
             
             let entriesHTML = '';
@@ -1025,10 +1077,10 @@ async function loadAllWalletEntries() {
             } else {
                 entries.forEach(entry => {
                     entriesHTML += `
-                        <div class="wallet-entry">
+                        <div class="wallet-entry" style="animation: fadeIn 0.3s ease ${index * 0.05}s both;">
                             <div class="entry-main">
                                 <span class="entry-amount">${entry.amount} MAD</span>
-                                <button class="entry-delete" onclick="deleteWalletEntry('${entry.id}', '${memberKey}')" title="Delete this transfer">🗑️</button>
+                                <button class="entry-delete" onclick="deleteWalletEntry('${entry.id}', '${member.key}')" title="Delete this transfer">🗑️</button>
                             </div>
                             <div class="entry-date">
                                 <svg viewBox="0 0 24 24">
@@ -1041,10 +1093,13 @@ async function loadAllWalletEntries() {
                 });
             }
             
+            // Add animation delay for each card based on rank (1st, 2nd, 3rd...)
+            const cardAnimationDelay = index * 0.1;
+            
             htmlStr += `
-                <div class="member-card">
+                <div class="member-card" style="animation: fadeIn 0.4s ease ${cardAnimationDelay}s both;">
                     <div class="member-header ${member.headerClass}">
-                        ${member.label}
+                        ${member.label} ${member.total > 0 ? '🏆' : ''}
                         <div class="member-total">Total: ${member.total.toFixed(2)} MAD</div>
                     </div>
                     <div class="entries-container">
@@ -1067,6 +1122,29 @@ async function loadAllWalletEntries() {
         `;
     }
 }
+
+// Listen to real-time changes in wallet_entries to auto-refresh the modal
+let walletRefreshInterval = null;
+
+// Function to set up real-time listener for wallet updates
+function setupWalletRealTimeListener() {
+    // Remove existing listener if any
+    if (walletRefreshInterval) {
+        clearInterval(walletRefreshInterval);
+    }
+    
+    // Check every 3 seconds for changes (lightweight polling)
+    // This ensures the modal shows latest data without requiring manual refresh
+    walletRefreshInterval = setInterval(async () => {
+        // Only refresh if modal is visible
+        if (walletModal.style.display === 'block') {
+            await loadAllWalletEntries();
+        }
+    }, 3000);
+}
+
+// Start real-time listener
+setupWalletRealTimeListener();
 
 // ========== SEND WALLET - Add new entry for each member ==========
 const sendBtn = document.getElementById('sendWalletBtn');
@@ -1126,8 +1204,13 @@ sendBtn.addEventListener('click', async function() {
             await deleteBatch.commit();
         }
         
-        // Show success
-        sendBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4V6zm2-4h12v2H6V2zm16 7H2v12h20V9zm-4 7h-4v-2h4v2z"/><circle cx="18" cy="16" r="2" fill="white" opacity="0.3"/></svg> Sent ✓`;
+        // Show success with animation
+        sendBtn.innerHTML = `<span>✅</span> Sent!`;
+        
+        // If modal is open, refresh it automatically
+        if (walletModal.style.display === 'block') {
+            await loadAllWalletEntries();
+        }
         
         // Reset button after 2 seconds
         setTimeout(() => {
@@ -1143,7 +1226,7 @@ sendBtn.addEventListener('click', async function() {
     }
 });
 
-// View wallet - Open modal and load ALL entries
+// View wallet - Open modal and load ALL entries with descending order
 viewBtn.addEventListener('click', async function() {
     try {
         viewBtn.innerHTML = `<span>⏳</span> Loading...`;
