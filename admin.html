@@ -73,12 +73,10 @@ h1 {
     gap: 8px;
     transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    letter-spacing: 0.3px;
 }
 
 .action-btn:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .back-btn {
@@ -110,84 +108,30 @@ h1 {
     color: white;
 }
 
-/* Summary Section - مرتب حسب الأموال مع مسافات */
-.summary {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 20px 0;
+/* ========== القسم العلوي: العناصر الثلاثة أفقياً ========== */
+.top-three-members {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
-/* كل بطاقة على حدة - مسافات مناسبة */
-.summary-item {
+.top-member-card {
     background: white;
     padding: 16px;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    font-weight: 500;
     text-align: center;
     border: 1px solid #eef2f6;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-/* أنيميشن رائعة عند التحديث */
-.summary-item.updating {
-    transform: scale(1.02);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+.top-member-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }
 
-.summary-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-}
-
-.summary-item.updating::before {
-    left: 100%;
-}
-
-/* مسافة خاصة بين Anas و Amine و Oussama وباقي العناصر */
-.summary-item[data-person="anas"] {
-    margin-bottom: 8px;
-    border-bottom: 4px solid #c62828;
-    background: linear-gradient(to bottom, #ffffff, #ffebee);
-}
-
-.summary-item[data-person="oussama"] {
-    margin-bottom: 8px;
-    border-bottom: 4px solid #1565c0;
-    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
-}
-
-.summary-item[data-person="amine"] {
-    margin-bottom: 25px;  /* مسافة كبيرة بعد Amine */
-    border-bottom: 4px solid #9e6b0c;
-    background: linear-gradient(to bottom, #ffffff, #fffde7);
-}
-
-/* باقي العناصر مع مسافة أقل */
-.summary-item[data-person="houssam"],
-.summary-item[data-person="zaki"],
-.summary-item[data-person="mohamed"],
-.summary-item[data-person="user3"],
-.summary-item[data-person="user4"],
-.summary-item[data-person="user5"] {
-    margin-bottom: 8px;
-}
-
-/* آخر عنصر لا يحتاج مسافة سفلية */
-.summary-item:last-child {
-    margin-bottom: 0;
-}
-
-.summary-item span {
+.top-member-card span {
     display: block;
     font-size: 1.4em;
     font-weight: 700;
@@ -195,23 +139,97 @@ h1 {
     color: #1e2b3a;
 }
 
-.summary-item small {
+.top-member-card small {
     color: #666;
     font-size: 0.7em;
     display: block;
     margin-top: 5px;
 }
 
-/* الوان كل شخص */
-.summary-item[data-person="anas"] { border-bottom: 4px solid #c62828; background: linear-gradient(to bottom, #ffffff, #ffebee); }
-.summary-item[data-person="oussama"] { border-bottom: 4px solid #1565c0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); }
-.summary-item[data-person="amine"] { border-bottom: 4px solid #9e6b0c; background: linear-gradient(to bottom, #ffffff, #fffde7); }
-.summary-item[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
-.summary-item[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
-.summary-item[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
-.summary-item[data-person="user3"] { border-bottom: 4px solid #06b6d4; background: linear-gradient(to bottom, #ffffff, #e0f2fe); }
-.summary-item[data-person="user4"] { border-bottom: 4px solid #f97316; background: linear-gradient(to bottom, #ffffff, #ffede0); }
-.summary-item[data-person="user5"] { border-bottom: 4px solid #ec489a; background: linear-gradient(to bottom, #ffffff, #fce7f3); }
+/* ألوان العناصر الثلاثة العلوية */
+.top-member-card[data-person="anas"] { 
+    border-bottom: 4px solid #c62828; 
+    background: linear-gradient(to bottom, #ffffff, #ffebee);
+}
+.top-member-card[data-person="oussama"] { 
+    border-bottom: 4px solid #1565c0; 
+    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
+}
+.top-member-card[data-person="amine"] { 
+    border-bottom: 4px solid #9e6b0c; 
+    background: linear-gradient(to bottom, #ffffff, #fffde7);
+}
+
+/* ========== الخط الفاصل الرمادي ========== */
+.divider {
+    margin: 10px 0 20px 0;
+    text-align: center;
+    position: relative;
+}
+
+.divider-line {
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #bdbdbd, #9e9e9e, #bdbdbd, transparent);
+    width: 100%;
+    margin: 10px 0;
+}
+
+.divider-text {
+    font-size: 0.85rem;
+    color: #757575;
+    background: #f0f2f5;
+    display: inline-block;
+    padding: 0 15px;
+    position: relative;
+    top: -12px;
+    font-weight: 500;
+}
+
+/* ========== باقي العناصر (تحت الخط) ========== */
+.other-members {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 5px;
+}
+
+.other-member-card {
+    background: white;
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+    border: 1px solid #eef2f6;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.other-member-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.other-member-card span {
+    display: block;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #1e2b3a;
+}
+
+.other-member-card small {
+    color: #666;
+    font-size: 0.7em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* ألوان باقي العناصر */
+.other-member-card[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
+.other-member-card[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
+.other-member-card[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
+.other-member-card[data-person="user3"] { border-bottom: 4px solid #06b6d4; background: linear-gradient(to bottom, #ffffff, #e0f2fe); }
+.other-member-card[data-person="user4"] { border-bottom: 4px solid #f97316; background: linear-gradient(to bottom, #ffffff, #ffede0); }
+.other-member-card[data-person="user5"] { border-bottom: 4px solid #ec489a; background: linear-gradient(to bottom, #ffffff, #fce7f3); }
 
 /* Table Container - متجاوب للهواتف */
 .table-container {
@@ -320,7 +338,7 @@ th {
     transition: all 0.3s ease;
 }
 
-/* WALLET MODAL - محسن للهواتف */
+/* WALLET MODAL - محسن للهواتف (لم يتغير) */
 .wallet-modal {
     display: none;
     position: fixed;
@@ -393,7 +411,6 @@ th {
     font-size: 0.85rem;
 }
 
-/* HORIZONTAL MEMBERS - متجاوب للهواتف */
 .members-horizontal-container {
     display: flex;
     flex-wrap: wrap;
@@ -413,24 +430,13 @@ th {
 }
 
 @media (min-width: 481px) {
-    .member-card {
-        width: calc(50% - 15px);
-        max-width: calc(50% - 15px);
-    }
+    .member-card { width: calc(50% - 15px); max-width: calc(50% - 15px); }
 }
-
 @media (min-width: 769px) {
-    .member-card {
-        width: calc(33.33% - 15px);
-        max-width: calc(33.33% - 15px);
-    }
+    .member-card { width: calc(33.33% - 15px); max-width: calc(33.33% - 15px); }
 }
-
 @media (min-width: 1025px) {
-    .member-card {
-        width: calc(20% - 15px);
-        max-width: calc(20% - 15px);
-    }
+    .member-card { width: calc(20% - 15px); max-width: calc(20% - 15px); }
 }
 
 .member-header {
@@ -530,54 +536,14 @@ th {
     font-size: 1rem;
 }
 
-/* تحسينات للهواتف الصغيرة */
 @media (max-width: 480px) {
-    body {
-        padding: 8px;
-    }
-    
-    h1 {
-        font-size: 1.3em;
-        margin: 10px 0 15px;
-    }
-    
-    .action-btn {
-        padding: 8px 14px;
-        font-size: 0.75rem;
-    }
-    
-    .send-wallet-btn, .view-wallet-btn {
-        padding: 10px 18px;
-        font-size: 0.85rem;
-    }
-    
-    .summary-item {
-        padding: 12px;
-    }
-    
-    .summary-item span {
-        font-size: 1.2em;
-    }
-    
-    .modal-header h2 {
-        font-size: 1.1rem;
-    }
-}
-
-/* أنيميشن للترتيب */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.summary-item {
-    animation: slideIn 0.3s ease-out;
+    body { padding: 8px; }
+    h1 { font-size: 1.3em; }
+    .top-three-members { gap: 8px; }
+    .top-member-card { padding: 12px; }
+    .top-member-card span { font-size: 1.2em; }
+    .other-member-card { padding: 12px; }
+    .other-member-card span { font-size: 1.2em; }
 }
 </style>
 </head>
@@ -588,7 +554,6 @@ th {
         <button class="action-btn back-btn" onclick="window.location.href='index.html'">← Back</button>
         <button class="action-btn logout-btn" onclick="logout()">🚪 Logout</button>
     </div>
-    
     <div class="bottom-row">
         <button class="action-btn refresh-btn" onclick="window.location.reload()">🔄 Refresh</button>
         <button class="action-btn send-wallet-btn" id="sendWalletBtn">💳 Send Wallet</button>
@@ -598,7 +563,46 @@ th {
 
 <h1>💰 Admin Panel · Cumulative Wallet System</h1>
 
-<div class="summary" id="summaryContainer"></div>
+<!-- العناصر الثلاثة الثابتة أفقياً -->
+<div class="top-three-members" id="topThreeContainer">
+    <div class="top-member-card" data-person="anas">
+        Anas <span id="anasTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="top-member-card" data-person="oussama">
+        Oussama <span id="oussamaTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="top-member-card" data-person="amine">
+        Amine <span id="amineTotal">0.00</span> <small>MAD</small>
+    </div>
+</div>
+
+<!-- الخط الفاصل الرمادي الجميل -->
+<div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">✦ باقي الأعضاء ✦</div>
+</div>
+
+<!-- باقي العناصر (تحت الخط) -->
+<div class="other-members" id="otherMembersContainer">
+    <div class="other-member-card" data-person="houssam">
+        Houssam <span id="houssamTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="other-member-card" data-person="zaki">
+        Zaki <span id="zakiTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="other-member-card" data-person="mohamed">
+        Mohamed <span id="mohamedTotal">0.00</span> <small>MAD</small>
+    </div>
+    <div class="other-member-card" data-person="user3">
+        Rida <span id="user3Total">0.00</span> <small>MAD</small>
+    </div>
+    <div class="other-member-card" data-person="user4">
+        Soufiane <span id="user4Total">0.00</span> <small>MAD</small>
+    </div>
+    <div class="other-member-card" data-person="user5">
+        User 5 <span id="user5Total">0.00</span> <small>MAD</small>
+    </div>
+</div>
 
 <div class="table-container">
     <div class="table-header-actions">
@@ -628,19 +632,6 @@ th {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-// قائمة المستخدمين وترتيبهم الافتراضي
-const allMembers = [
-    { key: 'anas', name: 'Anas' },
-    { key: 'oussama', name: 'Oussama' },
-    { key: 'amine', name: 'Amine' },
-    { key: 'houssam', name: 'Houssam' },
-    { key: 'zaki', name: 'Zaki' },
-    { key: 'mohamed', name: 'Mohamed' },
-    { key: 'user3', name: 'Rida' },
-    { key: 'user4', name: 'Soufiane' },
-    { key: 'user5', name: 'User 5' }
-];
-
 // مصادقة
 (function checkAuthentication() {
     const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' || 
@@ -677,9 +668,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const tableBody = document.getElementById("tableBody");
-const summaryContainer = document.getElementById("summaryContainer");
-
-let currentTotals = {};
 
 function getPersonClass(person) {
     const map = {
@@ -688,48 +676,6 @@ function getPersonClass(person) {
         "user3": "person-user3", "user4": "person-user4", "user5": "person-user5"
     };
     return map[person?.toLowerCase()] || "";
-}
-
-// دالة لعمل أنيميشن عند التحديث
-function animateUpdate(element) {
-    element.classList.add('updating');
-    setTimeout(() => {
-        element.classList.remove('updating');
-    }, 400);
-}
-
-// دالة لعرض الأعضاء مرتبين حسب الأموال (من الأكثر إلى الأقل)
-function renderSortedSummary(totals) {
-    // تحويل الكائن إلى مصفوفة وترتيبها تنازلياً حسب المبلغ
-    const sortedMembers = [...allMembers].sort((a, b) => {
-        const amountA = totals[a.key] || 0;
-        const amountB = totals[b.key] || 0;
-        return amountB - amountA; // ترتيب تنازلي (الأكثر أولاً)
-    });
-    
-    // بناء HTML مع أنيميشن
-    let html = '';
-    sortedMembers.forEach(member => {
-        const amount = totals[member.key] || 0;
-        const displayName = member.name;
-        
-        html += `
-            <div class="summary-item" data-person="${member.key}">
-                ${displayName}
-                <span>${amount.toFixed(2)}</span>
-                <small>MAD</small>
-            </div>
-        `;
-    });
-    
-    // إضافة أنيميشن للعناصر الجديدة
-    summaryContainer.innerHTML = html;
-    
-    // إضافة تأثير الأنيميشن لجميع العناصر
-    const items = document.querySelectorAll('.summary-item');
-    items.forEach(item => {
-        animateUpdate(item);
-    });
 }
 
 // الاستماع للتحديثات المباشرة
@@ -773,10 +719,21 @@ db.collection("payments").orderBy("time", "desc").onSnapshot(function(snapshot) 
         });
     }
 
-    currentTotals = { ...totals };
+    // تحديث العناصر الثلاثة العلوية
+    document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
+    document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
+    document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
     
-    // عرض الأعضاء مرتبين حسب الأموال مع أنيميشن
-    renderSortedSummary(totals);
+    // تحديث باقي العناصر
+    document.getElementById("houssamTotal").innerText = totals.houssam.toFixed(2);
+    document.getElementById("zakiTotal").innerText = totals.zaki.toFixed(2);
+    document.getElementById("mohamedTotal").innerText = totals.mohamed.toFixed(2);
+    document.getElementById("user3Total").innerText = totals.user3.toFixed(2);
+    document.getElementById("user4Total").innerText = totals.user4.toFixed(2);
+    document.getElementById("user5Total").innerText = totals.user5.toFixed(2);
+    
+    // حفظ المجاميع الحالية لاستخدامها في Send Wallet
+    window.currentTotals = totals;
 });
 
 function deleteDoc(id) {
@@ -787,7 +744,7 @@ function deleteDoc(id) {
     }
 }
 
-// Wallet Modal Functions
+// Wallet Modal Functions (بدون تغيير)
 const walletModal = document.getElementById('walletModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const membersContainer = document.getElementById('membersContainer');
@@ -893,7 +850,8 @@ const sendBtn = document.getElementById('sendWalletBtn');
 const viewBtn = document.getElementById('viewWalletBtn');
 
 sendBtn.addEventListener('click', async function() {
-    const hasNonZero = Object.values(currentTotals).some(val => val > 0);
+    const totals = window.currentTotals || {};
+    const hasNonZero = Object.values(totals).some(val => val > 0);
     if (!hasNonZero) {
         alert('No amounts to send. All totals are zero.');
         return;
@@ -908,7 +866,7 @@ sendBtn.addEventListener('click', async function() {
         let entriesAdded = 0;
         
         members.forEach(memberKey => {
-            const amount = currentTotals[memberKey];
+            const amount = totals[memberKey];
             if (amount > 0) {
                 entriesAdded++;
                 const entryRef = db.collection("wallet_entries").doc();
@@ -960,7 +918,6 @@ viewBtn.addEventListener('click', async function() {
     }, 800);
 });
 
-// فتح النافذة عند النقر على View Wallet من أي مكان
 window.loadAllWalletEntries = loadAllWalletEntries;
 window.deleteWalletEntry = deleteWalletEntry;
 window.deleteDoc = deleteDoc;
