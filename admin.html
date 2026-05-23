@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Admin Panel · Cumulative Wallet System</title>
 
 <style>
@@ -12,13 +12,959 @@
     padding: 0;
 }
 
-body{
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-background: #f0f2f5;
-padding: 12px;
-margin:0;
-min-height: 100vh;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f2f5;
+    padding: 12px;
+    margin: 0;
+    min-height: 100vh;
 }
 
-h1{
-text-align:center;
+h1 {
+    text-align: center;
+    color: #1a1a1a;
+    margin: 15px 0 20px;
+    font-size: 1.5em;
+}
+
+/* Header Actions - محسن للهواتف */
+.header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 12px;
+    background: white;
+    padding: 15px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecf0;
+}
+
+.top-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.bottom-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 2px dashed #e0e7f0;
+}
+
+.action-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    letter-spacing: 0.3px;
+}
+
+.action-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.refresh-btn {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+}
+
+.send-wallet-btn {
+    background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+    color: white;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+}
+
+.view-wallet-btn {
+    background: linear-gradient(135deg, #2d5f7e, #1d4e6b);
+    color: white;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+}
+
+.logout-btn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+/* Summary Section - مرتب حسب الأموال مع مسافات */
+.summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+/* كل بطاقة على حدة - مسافات مناسبة */
+.summary-item {
+    background: white;
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid #eef2f6;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* أنيميشن رائعة عند التحديث */
+.summary-item.updating {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.summary-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+}
+
+.summary-item.updating::before {
+    left: 100%;
+}
+
+/* مسافة خاصة بين Anas و Amine و Oussama وباقي العناصر */
+.summary-item[data-person="anas"] {
+    margin-bottom: 8px;
+    border-bottom: 4px solid #c62828;
+    background: linear-gradient(to bottom, #ffffff, #ffebee);
+}
+
+.summary-item[data-person="oussama"] {
+    margin-bottom: 8px;
+    border-bottom: 4px solid #1565c0;
+    background: linear-gradient(to bottom, #ffffff, #e3f2fd);
+}
+
+.summary-item[data-person="amine"] {
+    margin-bottom: 25px;  /* مسافة كبيرة بعد Amine */
+    border-bottom: 4px solid #9e6b0c;
+    background: linear-gradient(to bottom, #ffffff, #fffde7);
+}
+
+/* باقي العناصر مع مسافة أقل */
+.summary-item[data-person="houssam"],
+.summary-item[data-person="zaki"],
+.summary-item[data-person="mohamed"],
+.summary-item[data-person="user3"],
+.summary-item[data-person="user4"],
+.summary-item[data-person="user5"] {
+    margin-bottom: 8px;
+}
+
+/* آخر عنصر لا يحتاج مسافة سفلية */
+.summary-item:last-child {
+    margin-bottom: 0;
+}
+
+.summary-item span {
+    display: block;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #1e2b3a;
+}
+
+.summary-item small {
+    color: #666;
+    font-size: 0.7em;
+    display: block;
+    margin-top: 5px;
+}
+
+/* الوان كل شخص */
+.summary-item[data-person="anas"] { border-bottom: 4px solid #c62828; background: linear-gradient(to bottom, #ffffff, #ffebee); }
+.summary-item[data-person="oussama"] { border-bottom: 4px solid #1565c0; background: linear-gradient(to bottom, #ffffff, #e3f2fd); }
+.summary-item[data-person="amine"] { border-bottom: 4px solid #9e6b0c; background: linear-gradient(to bottom, #ffffff, #fffde7); }
+.summary-item[data-person="houssam"] { border-bottom: 4px solid #bf5e00; background: linear-gradient(to bottom, #ffffff, #fff3e0); }
+.summary-item[data-person="zaki"] { border-bottom: 4px solid #2e7d32; background: linear-gradient(to bottom, #ffffff, #e8f5e9); }
+.summary-item[data-person="mohamed"] { border-bottom: 4px solid #6a1b9a; background: linear-gradient(to bottom, #ffffff, #f3e5f5); }
+.summary-item[data-person="user3"] { border-bottom: 4px solid #06b6d4; background: linear-gradient(to bottom, #ffffff, #e0f2fe); }
+.summary-item[data-person="user4"] { border-bottom: 4px solid #f97316; background: linear-gradient(to bottom, #ffffff, #ffede0); }
+.summary-item[data-person="user5"] { border-bottom: 4px solid #ec489a; background: linear-gradient(to bottom, #ffffff, #fce7f3); }
+
+/* Table Container - متجاوب للهواتف */
+.table-container {
+    overflow-x: auto;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+    background: white;
+    border: 1px solid #e9ecf0;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 12px;
+    min-width: 600px;
+}
+
+th, td {
+    padding: 12px 8px;
+    border: 1px solid #edf2f7;
+    text-align: center;
+}
+
+th {
+    background: linear-gradient(135deg, #2c3e50, #1e2b3a);
+    color: white;
+    font-weight: 600;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.person-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 11px;
+    min-width: 70px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.person-anas { background: #ffebee; color: #c62828; border-left: 4px solid #c62828; }
+.person-ous { background: #e3f2fd; color: #1565c0; border-left: 4px solid #1565c0; }
+.person-amine { background: #fffde7; color: #9e6b0c; border-left: 4px solid #9e6b0c; }
+.person-houssam { background: #fff3e0; color: #bf5e00; border-left: 4px solid #bf5e00; }
+.person-zaki { background: #e8f5e9; color: #2e7d32; border-left: 4px solid #2e7d32; }
+.person-mohamed { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #6a1b9a; }
+.person-user3 { background: #e0f2fe; color: #06b6d4; border-left: 4px solid #06b6d4; }
+.person-user4 { background: #ffede0; color: #f97316; border-left: 4px solid #f97316; }
+.person-user5 { background: #fce7f3; color: #ec489a; border-left: 4px solid #ec489a; }
+
+.deleteBtn {
+    background: #ff5252;
+    color: white;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.deleteBtn:active {
+    transform: scale(0.9);
+}
+
+.table-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border-bottom: 2px solid #edf2f7;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.table-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.view-details-header-btn {
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+/* WALLET MODAL - محسن للهواتف */
+.wallet-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 10000;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+    max-width: 1400px;
+    margin: 10px auto;
+    position: relative;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+}
+
+.modal-header {
+    margin-bottom: 20px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.modal-header h2 {
+    font-size: 1.3rem;
+    color: white;
+    font-weight: 700;
+}
+
+.total-transfers-badge {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+    padding: 6px 12px;
+    border-radius: 50px;
+    color: white;
+    font-size: 0.85rem;
+}
+
+/* HORIZONTAL MEMBERS - متجاوب للهواتف */
+.members-horizontal-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.member-card {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+@media (min-width: 481px) {
+    .member-card {
+        width: calc(50% - 15px);
+        max-width: calc(50% - 15px);
+    }
+}
+
+@media (min-width: 769px) {
+    .member-card {
+        width: calc(33.33% - 15px);
+        max-width: calc(33.33% - 15px);
+    }
+}
+
+@media (min-width: 1025px) {
+    .member-card {
+        width: calc(20% - 15px);
+        max-width: calc(20% - 15px);
+    }
+}
+
+.member-header {
+    padding: 12px;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.member-total {
+    font-size: 0.7rem;
+    opacity: 0.9;
+    margin-top: 5px;
+    background: rgba(255,255,255,0.2);
+    padding: 3px 8px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.header-anas { background: linear-gradient(135deg, #c62828, #b71c1c); }
+.header-oussama { background: linear-gradient(135deg, #1565c0, #0d47a1); }
+.header-amine { background: linear-gradient(135deg, #9e6b0c, #7f5a0a); }
+.header-houssam { background: linear-gradient(135deg, #bf5e00, #9e4d00); }
+.header-zaki { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+.header-mohamed { background: linear-gradient(135deg, #6a1b9a, #4a0072); }
+.header-user3 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.header-user4 { background: linear-gradient(135deg, #f97316, #ea580c); }
+.header-user5 { background: linear-gradient(135deg, #ec489a, #db2777); }
+
+.entries-container {
+    padding: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #f8fafd;
+}
+
+.wallet-entry {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    border: 1px solid #edf2f7;
+}
+
+.entry-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.entry-amount {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.entry-date {
+    font-size: 0.65rem;
+    color: #718096;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.entry-delete {
+    background: #ff5252;
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-entries {
+    text-align: center;
+    padding: 15px;
+    color: #a0aec0;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+.no-data-modal {
+    text-align: center;
+    padding: 40px;
+    color: white;
+    background: rgba(255,255,255,0.1);
+    border-radius: 30px;
+    font-size: 1rem;
+}
+
+/* تحسينات للهواتف الصغيرة */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    h1 {
+        font-size: 1.3em;
+        margin: 10px 0 15px;
+    }
+    
+    .action-btn {
+        padding: 8px 14px;
+        font-size: 0.75rem;
+    }
+    
+    .send-wallet-btn, .view-wallet-btn {
+        padding: 10px 18px;
+        font-size: 0.85rem;
+    }
+    
+    .summary-item {
+        padding: 12px;
+    }
+    
+    .summary-item span {
+        font-size: 1.2em;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.1rem;
+    }
+}
+
+/* أنيميشن للترتيب */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.summary-item {
+    animation: slideIn 0.3s ease-out;
+}
+</style>
+</head>
+<body>
+
+<div class="header-actions">
+    <div class="top-row">
+        <button class="action-btn back-btn" onclick="window.location.href='index.html'">← Back</button>
+        <button class="action-btn logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+    
+    <div class="bottom-row">
+        <button class="action-btn refresh-btn" onclick="window.location.reload()">🔄 Refresh</button>
+        <button class="action-btn send-wallet-btn" id="sendWalletBtn">💳 Send Wallet</button>
+        <button class="action-btn view-wallet-btn" id="viewWalletBtn">👁️ View Wallet</button>
+    </div>
+</div>
+
+<h1>💰 Admin Panel · Cumulative Wallet System</h1>
+
+<div class="summary" id="summaryContainer"></div>
+
+<div class="table-container">
+    <div class="table-header-actions">
+        <div class="table-title">📋 Current Payment Records</div>
+        <button class="view-details-header-btn" onclick="window.location.href='operations.html'">📊 View All Operations</button>
+    </div>
+    <table>
+        <thead>
+            <tr><th>Main</th><th>Second</th><th>Price (MAD)</th><th>Description</th><th>Time</th><th>Action</th></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<div class="wallet-modal" id="walletModal">
+    <div class="modal-content">
+        <button class="close-modal-btn" id="closeModalBtn">&times;</button>
+        <div class="modal-header">
+            <h2>📦 All Transfers History</h2>
+            <div class="total-transfers-badge" id="totalTransfersBadge">Total: 0 transfers</div>
+        </div>
+        <div class="members-horizontal-container" id="membersContainer"></div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+// قائمة المستخدمين وترتيبهم الافتراضي
+const allMembers = [
+    { key: 'anas', name: 'Anas' },
+    { key: 'oussama', name: 'Oussama' },
+    { key: 'amine', name: 'Amine' },
+    { key: 'houssam', name: 'Houssam' },
+    { key: 'zaki', name: 'Zaki' },
+    { key: 'mohamed', name: 'Mohamed' },
+    { key: 'user3', name: 'Rida' },
+    { key: 'user4', name: 'Soufiane' },
+    { key: 'user5', name: 'User 5' }
+];
+
+// مصادقة
+(function checkAuthentication() {
+    const isAuth = sessionStorage.getItem('isAuthenticated') === 'true' || 
+                   sessionStorage.getItem('delivery_auth') === 'true' ||
+                   localStorage.getItem('delivery_auth') === 'true';
+    
+    if (!isAuth) {
+        sessionStorage.setItem('redirect_after_login', window.location.pathname);
+        window.location.href = 'index.html';
+        return false;
+    }
+    return true;
+})();
+
+function logout() {
+    sessionStorage.removeItem('isAuthenticated');
+    sessionStorage.removeItem('delivery_auth');
+    sessionStorage.removeItem('delivery_auth_time');
+    localStorage.removeItem('delivery_auth');
+    localStorage.removeItem('delivery_auth_time');
+    window.location.href = 'index.html';
+}
+
+// Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyCh8ssk6K7_LXDPpG3X85Z7VlUwDa_0_Og",
+    authDomain: "deliverymarrakech.firebaseapp.com",
+    projectId: "deliverymarrakech",
+    storageBucket: "deliverymarrakech.firebasestorage.app",
+    messagingSenderId: "543072772322",
+    appId: "1:543072772322:web:468d0c047e06c86bde7ebb"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const tableBody = document.getElementById("tableBody");
+const summaryContainer = document.getElementById("summaryContainer");
+
+let currentTotals = {};
+
+function getPersonClass(person) {
+    const map = {
+        "anas": "person-anas", "oussama": "person-ous", "amine": "person-amine",
+        "houssam": "person-houssam", "zaki": "person-zaki", "mohamed": "person-mohamed",
+        "user3": "person-user3", "user4": "person-user4", "user5": "person-user5"
+    };
+    return map[person?.toLowerCase()] || "";
+}
+
+// دالة لعمل أنيميشن عند التحديث
+function animateUpdate(element) {
+    element.classList.add('updating');
+    setTimeout(() => {
+        element.classList.remove('updating');
+    }, 400);
+}
+
+// دالة لعرض الأعضاء مرتبين حسب الأموال (من الأكثر إلى الأقل)
+function renderSortedSummary(totals) {
+    // تحويل الكائن إلى مصفوفة وترتيبها تنازلياً حسب المبلغ
+    const sortedMembers = [...allMembers].sort((a, b) => {
+        const amountA = totals[a.key] || 0;
+        const amountB = totals[b.key] || 0;
+        return amountB - amountA; // ترتيب تنازلي (الأكثر أولاً)
+    });
+    
+    // بناء HTML مع أنيميشن
+    let html = '';
+    sortedMembers.forEach(member => {
+        const amount = totals[member.key] || 0;
+        const displayName = member.name;
+        
+        html += `
+            <div class="summary-item" data-person="${member.key}">
+                ${displayName}
+                <span>${amount.toFixed(2)}</span>
+                <small>MAD</small>
+            </div>
+        `;
+    });
+    
+    // إضافة أنيميشن للعناصر الجديدة
+    summaryContainer.innerHTML = html;
+    
+    // إضافة تأثير الأنيميشن لجميع العناصر
+    const items = document.querySelectorAll('.summary-item');
+    items.forEach(item => {
+        animateUpdate(item);
+    });
+}
+
+// الاستماع للتحديثات المباشرة
+db.collection("payments").orderBy("time", "desc").onSnapshot(function(snapshot) {
+    tableBody.innerHTML = "";
+    let totals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0, user3: 0, user4: 0, user5: 0 };
+
+    if (snapshot.empty) {
+        let row = document.createElement("tr");
+        row.innerHTML = `<td colspan="6"><div style="text-align:center;padding:40px;">📭 No payment records found</div></td>`;
+        tableBody.appendChild(row);
+    } else {
+        snapshot.forEach(function(doc) {
+            let data = doc.data();
+            let row = document.createElement("tr");
+            let price = parseFloat(data.price) || 0;
+            let half = price / 2;
+            let mainClass = getPersonClass(data.name1);
+            let secondClass = getPersonClass(data.name2);
+            
+            if(data.name1?.toLowerCase() === "anas") totals.anas += half;
+            if(data.name1?.toLowerCase() === "oussama") totals.oussama += half;
+            if(data.name1?.toLowerCase() === "amine") totals.amine += half;
+            if(data.name2?.toLowerCase() === "houssam") totals.houssam += half;
+            if(data.name2?.toLowerCase() === "zaki") totals.zaki += half;
+            if(data.name1?.toLowerCase() === "mohamed") totals.mohamed += half;
+            if(data.name2?.toLowerCase() === "mohamed") totals.mohamed += half;
+            if(data.name2?.toLowerCase() === "user3") totals.user3 += half;
+            if(data.name2?.toLowerCase() === "user4") totals.user4 += half;
+            if(data.name2?.toLowerCase() === "user5") totals.user5 += half;
+
+            row.innerHTML = `
+                <td><span class="person-badge ${mainClass}">${data.name1 || 'N/A'}</span></td>
+                <td><span class="person-badge ${secondClass}">${data.name2 || 'N/A'}</span></td>
+                <td><strong>${price.toFixed(2)}</strong></td>
+                <td>${data.description || '-'}</td>
+                <td>${data.time ? new Date(data.time.seconds * 1000).toLocaleString() : 'N/A'}</td>
+                <td><button class="deleteBtn" onclick="deleteDoc('${doc.id}')">🗑️</button></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    currentTotals = { ...totals };
+    
+    // عرض الأعضاء مرتبين حسب الأموال مع أنيميشن
+    renderSortedSummary(totals);
+});
+
+function deleteDoc(id) {
+    if (confirm('Are you sure you want to delete this record?')) {
+        db.collection("payments").doc(id).delete()
+            .then(() => console.log("Document deleted"))
+            .catch(err => alert("Error: " + err));
+    }
+}
+
+// Wallet Modal Functions
+const walletModal = document.getElementById('walletModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const membersContainer = document.getElementById('membersContainer');
+const totalTransfersBadge = document.getElementById('totalTransfersBadge');
+
+closeModalBtn.addEventListener('click', () => walletModal.style.display = 'none');
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && walletModal.style.display === 'block') {
+        walletModal.style.display = 'none';
+    }
+});
+
+function formatEntryDate(timestamp) {
+    if (!timestamp) return 'No date';
+    let date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleString('en-US', { 
+        month: '2-digit', day: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+    }).replace(',', '');
+}
+
+async function deleteWalletEntry(entryId, memberKey) {
+    if (!confirm('Delete this transfer entry?')) return;
+    try {
+        await db.collection("wallet_entries").doc(entryId).delete();
+        loadAllWalletEntries();
+    } catch (error) {
+        alert("Failed to delete entry");
+    }
+}
+
+async function loadAllWalletEntries() {
+    try {
+        const snapshot = await db.collection("wallet_entries").orderBy("timestamp", "desc").get();
+        let totalEntries = 0;
+        
+        if (snapshot.empty) {
+            membersContainer.innerHTML = `<div class="no-data-modal">📭 No wallet transfers yet</div>`;
+            totalTransfersBadge.innerText = 'Total: 0 transfers';
+            return;
+        }
+        
+        const membersData = {
+            anas: { label: 'Anas', headerClass: 'header-anas', entries: [], total: 0 },
+            oussama: { label: 'Oussama', headerClass: 'header-oussama', entries: [], total: 0 },
+            amine: { label: 'Amine', headerClass: 'header-amine', entries: [], total: 0 },
+            houssam: { label: 'Houssam', headerClass: 'header-houssam', entries: [], total: 0 },
+            zaki: { label: 'Zaki', headerClass: 'header-zaki', entries: [], total: 0 },
+            mohamed: { label: 'Mohamed', headerClass: 'header-mohamed', entries: [], total: 0 },
+            user3: { label: 'User 3', headerClass: 'header-user3', entries: [], total: 0 },
+            user4: { label: 'User 4', headerClass: 'header-user4', entries: [], total: 0 },
+            user5: { label: 'User 5', headerClass: 'header-user5', entries: [], total: 0 }
+        };
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const member = data.member;
+            const amount = data.amount || 0;
+            if (membersData[member]) {
+                totalEntries++;
+                membersData[member].total += amount;
+                membersData[member].entries.push({
+                    id: doc.id,
+                    amount: amount.toFixed(2),
+                    date: formatEntryDate(data.timestamp)
+                });
+            }
+        });
+        
+        totalTransfersBadge.innerText = `Total: ${totalEntries} transfers`;
+        
+        let htmlStr = '';
+        for (const [memberKey, member] of Object.entries(membersData)) {
+            let entriesHTML = member.entries.length === 0 ? 
+                '<div class="no-entries">No transfers yet</div>' :
+                member.entries.map(entry => `
+                    <div class="wallet-entry">
+                        <div class="entry-main">
+                            <span class="entry-amount">${entry.amount} MAD</span>
+                            <button class="entry-delete" onclick="deleteWalletEntry('${entry.id}', '${memberKey}')">🗑️</button>
+                        </div>
+                        <div class="entry-date">📅 ${entry.date}</div>
+                    </div>
+                `).join('');
+            
+            htmlStr += `
+                <div class="member-card">
+                    <div class="member-header ${member.headerClass}">
+                        ${member.label}
+                        <div class="member-total">Total: ${member.total.toFixed(2)} MAD</div>
+                    </div>
+                    <div class="entries-container">${entriesHTML}</div>
+                </div>
+            `;
+        }
+        membersContainer.innerHTML = htmlStr;
+    } catch (error) {
+        membersContainer.innerHTML = `<div class="no-data-modal">❌ Error loading data</div>`;
+    }
+}
+
+const sendBtn = document.getElementById('sendWalletBtn');
+const viewBtn = document.getElementById('viewWalletBtn');
+
+sendBtn.addEventListener('click', async function() {
+    const hasNonZero = Object.values(currentTotals).some(val => val > 0);
+    if (!hasNonZero) {
+        alert('No amounts to send. All totals are zero.');
+        return;
+    }
+    
+    try {
+        sendBtn.innerHTML = `⏳ Sending...`;
+        sendBtn.disabled = true;
+        
+        const batch = db.batch();
+        const members = ['anas', 'oussama', 'amine', 'houssam', 'zaki', 'mohamed', 'user3', 'user4', 'user5'];
+        let entriesAdded = 0;
+        
+        members.forEach(memberKey => {
+            const amount = currentTotals[memberKey];
+            if (amount > 0) {
+                entriesAdded++;
+                const entryRef = db.collection("wallet_entries").doc();
+                batch.set(entryRef, {
+                    member: memberKey,
+                    amount: amount,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdAt: new Date().toISOString()
+                });
+            }
+        });
+        
+        if (entriesAdded === 0) {
+            alert('No amounts to send.');
+            sendBtn.innerHTML = `💳 Send Wallet`;
+            sendBtn.disabled = false;
+            return;
+        }
+        
+        await batch.commit();
+        
+        const paymentsSnapshot = await db.collection("payments").get();
+        if (!paymentsSnapshot.empty) {
+            const deleteBatch = db.batch();
+            paymentsSnapshot.docs.forEach(doc => deleteBatch.delete(doc.ref));
+            await deleteBatch.commit();
+        }
+        
+        sendBtn.innerHTML = `✅ Sent!`;
+        setTimeout(() => {
+            sendBtn.innerHTML = `💳 Send Wallet`;
+            sendBtn.disabled = false;
+        }, 2000);
+    } catch (error) {
+        alert("Failed to save wallet.");
+        sendBtn.innerHTML = `💳 Send Wallet`;
+        sendBtn.disabled = false;
+    }
+});
+
+viewBtn.addEventListener('click', async function() {
+    viewBtn.innerHTML = `⏳ Loading...`;
+    viewBtn.disabled = true;
+    await loadAllWalletEntries();
+    walletModal.style.display = 'block';
+    setTimeout(() => {
+        viewBtn.innerHTML = `👁️ View Wallet`;
+        viewBtn.disabled = false;
+    }, 800);
+});
+
+// فتح النافذة عند النقر على View Wallet من أي مكان
+window.loadAllWalletEntries = loadAllWalletEntries;
+window.deleteWalletEntry = deleteWalletEntry;
+window.deleteDoc = deleteDoc;
+</script>
+
+</body>
+</html>
