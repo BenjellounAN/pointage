@@ -217,13 +217,12 @@ function login() {
         // استخدام نفس المفاتيح في كل الصفحات
         sessionStorage.setItem('delivery_auth', 'true');
         sessionStorage.setItem('delivery_auth_time', authTime);
+        sessionStorage.setItem('isAuthenticated', 'true');
         
         // نسخة احتياطية في localStorage
         localStorage.setItem('delivery_auth', 'true');
         localStorage.setItem('delivery_auth_time', authTime);
-        
-        // الاحتفاظ بالتوافق مع الكود القديم
-        sessionStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('isAuthenticated', 'true');
         
         // التحقق من وجود صفحة مقصودة
         const redirectUrl = sessionStorage.getItem('redirect_after_login') || 'admin.html';
