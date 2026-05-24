@@ -601,16 +601,32 @@ const db = firebase.firestore();
 const tableBody = document.getElementById("tableBody");
 const otherMembersContainer = document.getElementById("otherMembersContainer");
 
-// إضافة مستمع لزر View All Operations
+// ==============================================
+// التعديل المطلوب: زر View All Operations
+// ==============================================
 const viewOperationsBtn = document.getElementById('viewOperationsBtn');
 if (viewOperationsBtn) {
     viewOperationsBtn.addEventListener('click', function(e) {
         e.preventDefault();
+        
+        // التحقق من وجود تسجيل دخول صحيح
+        const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true' || 
+                               sessionStorage.getItem('delivery_auth') === 'true' ||
+                               localStorage.getItem('delivery_auth') === 'true';
+        
+        if (!isAuthenticated) {
+            // إذا لم يكن مسجل الدخول، اذهب إلى login.html
+            alert('Please login first to view operations');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // إذا كان مسجل الدخول، انتقل إلى operations.html
         window.location.href = 'operations.html';
     });
 }
 
-let previousSortedKeys = []; // لتتبع التغييرات في الترتيب
+let previousSortedKeys = [];
 
 function getPersonClass(person) {
     const map = {
@@ -621,7 +637,6 @@ function getPersonClass(person) {
     return map[person?.toLowerCase()] || "";
 }
 
-// قائمة العناصر التي ستُعرض تحت الخط (مرتبة حسب الأموال)
 const otherMembersList = [
     { key: 'houssam', name: 'Houssam' },
     { key: 'zaki', name: 'Zaki' },
@@ -631,16 +646,13 @@ const otherMembersList = [
     { key: 'user5', name: 'User 5' }
 ];
 
-// دالة لعرض العناصر مرتبة حسب الأموال مع أنيميشن
 function renderOtherMembersSorted(totals) {
-    // ترتيب العناصر من الأكثر مالاً إلى الأقل
     const sortedMembers = [...otherMembersList].sort((a, b) => {
         const amountA = totals[a.key] || 0;
         const amountB = totals[b.key] || 0;
         return amountB - amountA;
     });
     
-    // التحقق مما إذا كان الترتيب قد تغير
     const currentSortedKeys = sortedMembers.map(m => m.key);
     let orderChanged = false;
     
@@ -655,13 +667,11 @@ function renderOtherMembersSorted(totals) {
         }
     }
     
-    // بناء HTML
     let html = '';
     sortedMembers.forEach((member, index) => {
         const amount = totals[member.key] || 0;
         const rank = index + 1;
         
-        // أيقونة المركز حسب الترتيب
         let rankIcon = '';
         if (rank === 1) rankIcon = '🥇 ';
         else if (rank === 2) rankIcon = '🥈 ';
@@ -678,14 +688,11 @@ function renderOtherMembersSorted(totals) {
         `;
     });
     
-    // تحديث DOM مع أنيميشن إذا تغير الترتيب
     if (orderChanged && previousSortedKeys.length > 0) {
-        // إذا تغير الترتيب، أضف أنيميشن التبادل
         otherMembersContainer.style.opacity = '0.7';
         setTimeout(() => {
             otherMembersContainer.innerHTML = html;
             otherMembersContainer.style.opacity = '1';
-            // إضافة أنيميشن لكل عنصر
             const cards = document.querySelectorAll('.other-member-card');
             cards.forEach((card, idx) => {
                 setTimeout(() => {
@@ -695,7 +702,6 @@ function renderOtherMembersSorted(totals) {
             });
         }, 150);
     } else {
-        // إذا لم يتغير الترتيب، فقط حدث الأرقام مع أنيميشن بسيط
         otherMembersContainer.innerHTML = html;
         const cards = document.querySelectorAll('.other-member-card');
         cards.forEach(card => {
@@ -704,11 +710,9 @@ function renderOtherMembersSorted(totals) {
         });
     }
     
-    // حفظ الترتيب الحالي للمقارنة المستقبلية
     previousSortedKeys = currentSortedKeys;
 }
 
-// الاستماع للتحديثات المباشرة من Firebase
 db.collection("payments").orderBy("time", "desc").onSnapshot(function(snapshot) {
     tableBody.innerHTML = "";
     let totals = { anas: 0, oussama: 0, amine: 0, houssam: 0, zaki: 0, mohamed: 0, user3: 0, user4: 0, user5: 0 };
@@ -749,12 +753,10 @@ db.collection("payments").orderBy("time", "desc").onSnapshot(function(snapshot) 
         });
     }
 
-    // تحديث العناصر الثلاثة العلوية (بدون أنيميشن ترتيب لأنها ثابتة)
     document.getElementById("anasTotal").innerText = totals.anas.toFixed(2);
     document.getElementById("oussamaTotal").innerText = totals.oussama.toFixed(2);
     document.getElementById("amineTotal").innerText = totals.amine.toFixed(2);
     
-    // إضافة أنيميشن بسيط للعناصر الثلاثة العلوية عند تحديث الأرقام
     ['anasTotal', 'oussamaTotal', 'amineTotal'].forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -763,10 +765,7 @@ db.collection("payments").orderBy("time", "desc").onSnapshot(function(snapshot) 
         }
     });
     
-    // عرض باقي العناصر مرتبة حسب الأموال مع أنيميشن رائعة
     renderOtherMembersSorted(totals);
-    
-    // حفظ المجاميع الحالية
     window.currentTotals = totals;
 });
 
@@ -778,7 +777,6 @@ function deleteDoc(id) {
     }
 }
 
-// Wallet Modal Functions
 const walletModal = document.getElementById('walletModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const membersContainer = document.getElementById('membersContainer');
